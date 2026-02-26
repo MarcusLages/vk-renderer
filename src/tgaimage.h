@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <fstream>
 #include <vector>
+#include "graphics.hpp"
 
 // Changes the padding for the struct alignment.
 // This is used to make sure that header fits into the normal TGA header format.
@@ -31,7 +32,14 @@ struct TGAHeader {
 struct TGAColor {
     std::uint8_t bgra[4] = {0,0,0,0};
     std::uint8_t bytespp = 4;  // Bytes per pixel
+    constexpr TGAColor() = default;
+    constexpr TGAColor(Color c) : bgra{c.b, c.g, c.r, c.a}, bytespp(4) {}
+    constexpr TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a)
+        : bgra(b, g, r, a), bytespp(4) {}
+    constexpr TGAColor(std::uint8_t r, std::uint8_t g, std::uint8_t b, std::uint8_t a, std::uint8_t bpp)
+        : bgra(b, g, r, a), bytespp(bpp) {}
     std::uint8_t& operator[](const int i) { return bgra[i]; }
+    Color to_color() { return { bgra[2], bgra[1], bgra[0], bgra[3]}; }
 };
 
 struct TGAImage {
@@ -53,4 +61,3 @@ private:
     std::uint8_t bpp = 0; // Bytes per pixel
     std::vector<std::uint8_t> data = {};
 };
-
