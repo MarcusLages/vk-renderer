@@ -9,14 +9,14 @@ Linux:
 ```bash
 cmake -Bbuild
 cmake --build build -j
-build/vk-renderer obj/diablo3_pose/diablo3_pose.obj obj/floor.obj
+build/vkr obj/diablo3_pose/diablo3_pose.obj obj/floor.obj
 ```
 
 Windows:
 ```bash
 cmake -Bbuild
 cmake --build build -j
-build\vk-renderer.exe obj\diablo3_pose\diablo3_pose.obj obj\floor.obj
+build\vkr.exe obj\diablo3_pose\diablo3_pose.obj obj\floor.obj
 ```
 
 # References
