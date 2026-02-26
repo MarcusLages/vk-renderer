@@ -42,22 +42,21 @@ struct TGAColor {
     Color to_color() { return { bgra[2], bgra[1], bgra[0], bgra[3]}; }
 };
 
-struct TGAImage {
+struct TGAImage: public IFrameBuffer {
     enum Format { GRAYSCALE=1, RGB=3, RGBA=4 };
+    std::uint8_t bpp = 0; // Bytes per pixel
+    std::vector<std::uint8_t> data = {};
     TGAImage() = default;
     TGAImage(const int w, const int h, const int bpp);
     bool  read_tga_file(const std::string filename);
     bool write_tga_file(const std::string filename, const bool vflip=true, const bool rle=true) const;
     void flip_horizontally();
     void flip_vertically();
-    TGAColor get(const int x, const int y) const;
+    Color get(const int x, const int y) const override;
+    void set(const int x, const int y, const Color &c) override;
     void set(const int x, const int y, const TGAColor &c);
-    int width()  const;
-    int height() const;
+    void clear() override;
 private:
     bool   load_rle_data(std::ifstream &in);
     bool unload_rle_data(std::ofstream &out) const;
-    int w = 0, h = 0;
-    std::uint8_t bpp = 0; // Bytes per pixel
-    std::vector<std::uint8_t> data = {};
 };

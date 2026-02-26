@@ -2,7 +2,7 @@
 #include <cstring>
 #include "tgaimage.h"
                                                                                     // auto init vector data
-TGAImage::TGAImage(const int w, const int h, const int bpp) : w(w), h(h), bpp(bpp), data(w*h*bpp, 0) {}
+TGAImage::TGAImage(const int w, const int h, const int bpp) : IFrameBuffer(w, h), bpp(bpp), data(w*h*bpp, 0) {}
 
 bool TGAImage::read_tga_file(const std::string filename) {
     std::ifstream in;
@@ -165,18 +165,26 @@ bool TGAImage::unload_rle_data(std::ofstream &out) const {
     return true;
 }
 
-TGAColor TGAImage::get(const int x, const int y) const {
+Color TGAImage::get(const int x, const int y) const {
     if (!data.size() || x<0 || y<0 || x>=w || y>=h) return {};
     TGAColor ret = {0, 0, 0, 0, bpp};
     const std::uint8_t *p = data.data()+(x+y*w)*bpp;
     for (int i=bpp; i--; ret.bgra[i] = p[i]);
-    return ret;
+    return ret.to_color();
+}
+
+void TGAImage::set(int x, int y, const Color &c) {
+    TGAColor tc = TGAColor(c);
+    if (!data.size() || x<0 || y<0 || x>=w || y>=h) return;
+    memcpy(data.data()+(x+y*w)*bpp, tc.bgra, bpp);
 }
 
 void TGAImage::set(int x, int y, const TGAColor &c) {
     if (!data.size() || x<0 || y<0 || x>=w || y>=h) return;
     memcpy(data.data()+(x+y*w)*bpp, c.bgra, bpp);
 }
+
+void TGAImage::clear() {}
 
 void TGAImage::flip_horizontally() {
     for (int i=0; i<w/2; i++)
@@ -190,13 +198,5 @@ void TGAImage::flip_vertically() {
         for (int j=0; j<h/2; j++)
             for (int b=0; b<bpp; b++)
                 std::swap(data[(i+j*w)*bpp+b], data[(i+(h-1-j)*w)*bpp+b]);
-}
-
-int TGAImage::width() const {
-    return w;
-}
-
-int TGAImage::height() const {
-    return h;
 }
 
