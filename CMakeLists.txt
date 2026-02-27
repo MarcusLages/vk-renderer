@@ -9,8 +9,11 @@ set(SOURCES
     src/tgaimage.cpp
 )
 
+find_package(SDL2 CONFIG REQUIRED)
+
 add_executable(${PROJECT_NAME} ${SOURCES})
 
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2::SDL2main)
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
