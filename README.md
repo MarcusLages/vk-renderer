@@ -5,6 +5,7 @@ Base of a future project and used to learn graphics programming, game engine dev
 Initial code and implementation based on [tinyrenderer](https://haqr.eu/tinyrenderer/).
 
 # How to Run
+The executable is compiled to `/build` and to the root folder.
 Linux:
 ```bash
 export CMAKE_PREFIX_PATH='WHEREVER SDL AND OTHER LIBRARIES CMAKE ARE'

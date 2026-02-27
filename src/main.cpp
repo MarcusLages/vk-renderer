@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string>
+#include <SDL.h>
 #include "tgaimage.h"
 
 const std::string filename = "framebuffer.tga";
