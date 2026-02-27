@@ -13,7 +13,7 @@ find_package(SDL2 CONFIG REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE mingw32 SDL2::SDL2main SDL2::SDL2)
+target_link_libraries(${PROJECT_NAME} PRIVATE mingw32 SDL2::SDL2)
 target_include_directories(${PROJECT_NAME} PUBLIC src)
 
 add_custom_command(TARGET ${PROJECT_NAME}

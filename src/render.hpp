@@ -12,8 +12,9 @@ namespace vkr {
         int h = DEF_FRAME_HEIGHT;
     
     public:
-        constexpr IFrameBuffer() = default;
-        constexpr IFrameBuffer(const int w, const int h): w(w), h(h) {}
+        IFrameBuffer() = default;
+        IFrameBuffer(const int w, const int h): w(w), h(h) {}
+        virtual ~IFrameBuffer() = default;
     
         virtual Color get(const int x, const int y) const = 0;
         virtual void set(const int x, const int y, const Color &c) = 0;
@@ -23,4 +24,10 @@ namespace vkr {
         constexpr int height() const { return h; }
     };
     
+    struct IRenderTarget {
+        virtual ~IRenderTarget() = default;
+        virtual IFrameBuffer& framebuffer() = 0;
+        virtual void present() = 0;
+    };
+
 }

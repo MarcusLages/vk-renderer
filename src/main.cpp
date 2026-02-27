@@ -1,14 +1,15 @@
+#define SDL_MAIN_HANDLED
+
 #include <cmath>
 #include <string>
 #include <SDL.h>
 #include "tgaimage.h"
 
-const std::string filename = "framebuffer.tga";
-
 int main(int argc, char** argv) {
     constexpr int width  = 64;
     constexpr int height = 64;
-    vkr::TGAImage framebuffer(width, height, vkr::TGAImage::RGB);
+    vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
+    auto& framebuffer = tga.framebuffer();
 
     int ax =  7, ay =  3;
     int bx = 12, by = 37;
@@ -18,7 +19,7 @@ int main(int argc, char** argv) {
     framebuffer.set(bx, by, vkr::WHITE);
     framebuffer.set(cx, cy, vkr::WHITE);
 
-    framebuffer.write_tga_file("framebuffer.tga");
+    tga.present();
     return 0;
 }
 
