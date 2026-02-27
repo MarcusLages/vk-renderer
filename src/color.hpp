@@ -4,7 +4,6 @@
 namespace vkr {
 
     struct Color {
-        // Access color fragments by name or array (bgra order)
         union {
             std::uint8_t rgba[4] = {0, 0, 0, 0};
             struct {
@@ -33,10 +32,11 @@ namespace vkr {
     };
     
     // Common colors
-    constexpr Color WHITE   = {255, 255, 255, 255};
-    constexpr Color GREEN   = {  0, 255,   0, 255};
-    constexpr Color RED     = {255,   0,   0, 255};
-    constexpr Color BLUE    = { 64, 128, 255, 255};
-    constexpr Color YELLOW  = {255, 200,   0, 255};
+    constexpr Color COL_BLACK   = {  0,   0,   0, 255};
+    constexpr Color COL_WHITE   = {255, 255, 255, 255};
+    constexpr Color COL_GREEN   = {  0, 255,   0, 255};
+    constexpr Color COL_RED     = {255,   0,   0, 255};
+    constexpr Color COL_BLUE    = { 64, 128, 255, 255};
+    constexpr Color COL_YELLOW  = {255, 200,   0, 255};
 
 }
