@@ -3,11 +3,27 @@
 
 namespace vkr {
     namespace sdl {
-
+        
         SDLFrameBuffer::~SDLFrameBuffer() {
-            if(win) SDL_DestroyWindow(win);
-            win = nullptr;
+            // Considers that the window closes the Surface
+            // Just here to notify that
             surf = nullptr;
+        }
+
+        int SDLFrameBuffer::init(SDL_Window* window) {
+            surf = SDL_GetWindowSurface(window);
+            if(!surf) {
+                return -1; // TODO: change to error code
+            }
+            h = surf->h;
+            w = surf->w;
+            return 0;
+        }
+
+        void SDLFrameBuffer::init(SDL_Surface* surf) {
+            surf = surf;
+            h = surf->h;
+            w = surf->w;
         }
 
         //! Returns transparent black (Color{}) if out of bounds
@@ -37,43 +53,41 @@ namespace vkr {
             SDL_FillRect(surf, nullptr, 0x0);
         }
 
-        SDLTarget::SDLTarget(int w, int h, std::string win_name)
-        : fb(w, h, win_name) {
+        SDLTarget::SDLTarget(int w, int h, std::string window_name) 
+        : window_name(window_name), fb() {
             if(SDL_Init(SDL_INIT_VIDEO))
                 throw std::runtime_error("SDL wasn't able to be initiallized.");
                 
-            fb.win = SDL_CreateWindow(
-                fb.win_name.data(),
+            win = SDL_CreateWindow(
+                window_name.data(),
                 SDL_WINDOWPOS_UNDEFINED,
                 SDL_WINDOWPOS_UNDEFINED,
-                fb.width(),
-                fb.height(),
+                w, h,
                 SDL_WINDOW_SHOWN
             );
-            if(!fb.win) {
+            if(!win) {
                 SDL_Quit();
                 throw std::runtime_error("SDL wasn't able to create a window.");
             }
             
-            fb.surf = SDL_GetWindowSurface(fb.win);
-            if(!fb.surf) {
-                SDL_DestroyWindow(fb.win);
+            if(fb.init(win)) {
+                SDL_DestroyWindow(win);
                 SDL_Quit();
-                throw std::runtime_error("SDL wasn't able to create a window.");
+                throw std::runtime_error("SDL wasn't able to initiallize surface framebuffer.");
             }
         }
 
         SDLTarget::~SDLTarget() {
-            fb = nullptr;
+            SDL_DestroyWindow(win);
             SDL_Quit();
         }
         
         void SDLTarget::present() {
-            // TODO: Rendering loop is temporary
+            // TODO: Rendering loop here is temporary
             bool quit = false;
             SDL_Event e;
             while(!quit) {
-                SDL_UpdateWindowSurface(fb.win);
+                SDL_UpdateWindowSurface(win);
                 while(SDL_PollEvent(&e))
                     if(e.type == SDL_QUIT)
                         quit = true;

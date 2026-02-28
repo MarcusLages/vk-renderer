@@ -10,22 +10,16 @@ namespace vkr {
 
         //! Will have to create my own inner framebuffer vector later to make sure concurrency is right
         struct SDLFrameBuffer : public IFrameBuffer {
-            std::string win_name = DEF_WINDOW_NAME;
-            SDL_Window* win = nullptr;
             SDL_Surface* surf = nullptr;
-            
 
-            SDLFrameBuffer(const int w, const int h, std::string win_name = DEF_WINDOW_NAME) 
-                : IFrameBuffer(w, h), win_name(win_name) {}
-            SDLFrameBuffer(SDL_Window* window, std::string win_name = DEF_WINDOW_NAME)
-            : win(window), win_name(win_name) {
-                surf = SDL_GetWindowSurface(win);
-                w = surf->w;
-                h = surf->h;
-            }
+            SDLFrameBuffer() = default; // Avoid, if possible (will have to initiallize all manually)
+            SDLFrameBuffer(SDL_Surface* surf)
+                : surf(surf), IFrameBuffer(surf->w, surf->h) {}
             ~SDLFrameBuffer();
 
-            
+            // Should be called if the default constructor was used
+            int init(SDL_Window* window);
+            void init(SDL_Surface* surf);
             //! Returns transparent black (Color{}) if out of bounds
             Color get(const int x, const int y) const override;
             void set(const int x, const int y, const Color &c) override;
@@ -34,14 +28,15 @@ namespace vkr {
         
         //! Works like an SDL RAII context so only one SDLTarget is allowed
         struct SDLTarget : public IRenderTarget {
+            std::string window_name;
             SDLFrameBuffer fb;
+            SDL_Window* win = nullptr;
     
-            SDLTarget(int w, int h, std::string win_name = DEF_WINDOW_NAME);
+            SDLTarget(int w, int h, std::string window_name = DEF_WINDOW_NAME);
             ~SDLTarget();
     
             IFrameBuffer& framebuffer() override { return fb; }
             void present() override;
-            std::string window_name() { return fb.win_name; }
         };
 
     }
