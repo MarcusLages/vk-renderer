@@ -83,16 +83,19 @@ namespace vkr {
         }
         
         void SDLTarget::present() {
-            // TODO: Rendering loop here is temporary
+            SDL_UpdateWindowSurface(win);
+        }
+        
+        // TODO: take this out later when I have a centralized runner
+        void SDLTarget::run() {
             bool quit = false;
             SDL_Event e;
             while(!quit) {
-                SDL_UpdateWindowSurface(win);
+                present();
                 while(SDL_PollEvent(&e))
                     if(e.type == SDL_QUIT)
                         quit = true;
             }
         }
-
     }
 }

@@ -37,6 +37,7 @@ namespace vkr {
     
             IFrameBuffer& framebuffer() override { return fb; }
             void present() override;
+            void run(); // TODO: take this out later when I have a centralized runner
         };
 
     }
