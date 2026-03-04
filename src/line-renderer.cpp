@@ -4,7 +4,7 @@
 namespace vkr {
 
     void draw_point(mvmath::vec2 v, vkr::Color col, vkr::IFrameBuffer &fb) {
-        fb.set(v.x, v.y, col);
+        fb.set(std::round(v.x), std::round(v.y), col);
     }
     
     void draw_line(
@@ -17,24 +17,22 @@ namespace vkr {
             std::swap(a.x, b.x);
             std::swap(a.y, b.y);
         }
-
-        // Repeating code to avoid having to use if-checks all the time for swap
-        if(std::abs(b.y - a.y) > b.x - a.x) {
+        
+        const bool is_transposed = std::abs(b.y - a.y) > b.x - a.x;
+        if(is_transposed) {
             // Swap to iterate over the longest line
             std::swap(a.x, a.y);
             std::swap(b.x, b.y);
-            
-            const float xy_ratio = (b.y - a.y) / (b.x - a.x);
-            for(int x = a.x; x <= b.x; x++) {
-                int y = std::round(a.y + xy_ratio * (x - a.x));
-                fb.set(y, x, col);
-            }
-        } else {
-            const float xy_ratio = (b.y - a.y) / (b.x - a.x);
-            for(int x = a.x; x <= b.x; x++) {
-                int y = std::round(a.y + xy_ratio * (x - a.x));
-                fb.set(x, y, col);
-            }
+        }
+        
+        const float xy_ratio = (b.y - a.y) / (b.x - a.x);
+        float y = a.y;
+        for(int x = a.x; x <= b.x; x++) {
+            if(is_transposed)
+                fb.set(std::round(y), x, col);
+            else
+                fb.set(x, std::round(y), col);
+            y += xy_ratio;
         }
     }
     
