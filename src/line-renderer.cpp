@@ -13,10 +13,28 @@ namespace vkr {
         vkr::Color col,
         vkr::IFrameBuffer &fb
     ) {
-        for(float t = 0; t <= 1.0; t += .02) {
-            float x = a.x + t * (b.x - a.x);
-            float y = a.y + t * (b.y - a.y);
-            fb.set(x, y, col); // Random colour
+        if(a.x > b.x) { // So incrementing actually goes from a to b
+            std::swap(a.x, b.x);
+            std::swap(a.y, b.y);
+        }
+
+        // Repeating code to avoid having to use if-checks all the time for swap
+        if(std::abs(b.y - a.y) > b.x - a.x) {
+            // Swap to iterate over the longest line
+            std::swap(a.x, a.y);
+            std::swap(b.x, b.y);
+            
+            const float xy_ratio = (b.y - a.y) / (b.x - a.x);
+            for(int x = a.x; x <= b.x; x++) {
+                int y = std::round(a.y + xy_ratio * (x - a.x));
+                fb.set(y, x, col);
+            }
+        } else {
+            const float xy_ratio = (b.y - a.y) / (b.x - a.x);
+            for(int x = a.x; x <= b.x; x++) {
+                int y = std::round(a.y + xy_ratio * (x - a.x));
+                fb.set(x, y, col);
+            }
         }
     }
     
