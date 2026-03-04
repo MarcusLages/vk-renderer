@@ -29,6 +29,13 @@ namespace vkr {
         constexpr const std::uint8_t& operator[](int i) const {
             return rgba[i];
         }
+
+        constexpr bool operator==(Color c) const {
+            return r == c.r &&
+                   g == c.g &&
+                   b == c.b &&
+                   a == c.a;
+        }
     };
     
     // Common colors
