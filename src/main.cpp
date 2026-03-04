@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include "tgaimage.h"
 #include "sdl-render.hpp"
+#include "line-renderer.hpp"
 
 int main(int argc, char** argv) {
     constexpr int width  = 64;
@@ -13,23 +14,17 @@ int main(int argc, char** argv) {
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();
 
-    vkr::sdl::SDLTarget sdl(width, height);
-    auto& sdl_fb = sdl.framebuffer();
+    // vkr::sdl::SDLTarget sdl(width, height);
+    // auto& sdl_fb = sdl.framebuffer();
 
-    int ax =  5, ay =  5;
-    int bx = 12, by = 37;
-    int cx = width-6, cy = height-6;
+    mvmath::vec2 a = { 7, 3};
+    mvmath::vec2 b = { 12, 37};
+    mvmath::vec2 c = { 62, 53};
 
-    tga_fb.set(ax, ay, vkr::COL_WHITE);
-    tga_fb.set(bx, by, vkr::COL_WHITE);
-    tga_fb.set(cx, cy, vkr::COL_WHITE);
-
-    sdl_fb.set(ax, ay, vkr::COL_WHITE);
-    sdl_fb.set(bx, by, vkr::COL_WHITE);
-    sdl_fb.set(cx, cy, vkr::COL_WHITE);
+    vkr::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
 
     tga.present();
-    sdl.present();
+    // sdl.run();
 
     return 0;
 }

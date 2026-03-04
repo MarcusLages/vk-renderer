@@ -5,9 +5,10 @@ project(vkr LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES
-    src/main.cpp
     src/tgaimage.cpp
     src/sdl-render.cpp
+    src/line-renderer.cpp
+    src/main.cpp
 )
 
 find_package(SDL2 CONFIG REQUIRED)
