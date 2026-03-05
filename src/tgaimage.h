@@ -7,6 +7,7 @@
 namespace vkr {
     namespace tga {
         
+        // Adaptation from tinyrenderer by ssloy
         // Changes the padding for the struct alignment.
         // This is used to make sure that header fits into the normal TGA header format.
         // pack(push, 1) makes it so there's no padding between different data types

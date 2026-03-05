@@ -1,15 +1,22 @@
 #define SDL_MAIN_HANDLED
 
-#include <cmath>
+#include <iostream>
 #include <string>
 #include <SDL.h>
 #include "tgaimage.h"
 #include "sdl-render.hpp"
+#include "model.hpp"
 #include "line-renderer.hpp"
 
 int main(int argc, char** argv) {
+    if(argc <= 1) {
+        std::cout << "Usage: " + std::string(argv[0]) + " <filename.obj>." ;
+        return 1;
+    }
+
     constexpr int width  = 64;
     constexpr int height = 64;
+    vkr::Model model(argv[1]);
     
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();

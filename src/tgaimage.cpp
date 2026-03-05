@@ -5,6 +5,7 @@
 namespace vkr {
     namespace tga {
 
+        // Adaptation from tinyrenderer by ssloy
         // auto init vector data
         TGAImage::TGAImage(const int w, const int h, const int bpp) : IFrameBuffer(w, h), bpp(bpp), data(w * h * bpp, 0) {}
     

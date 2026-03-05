@@ -1,3 +1,4 @@
+#pragma once
 #include <mvmath.hpp>
 #include <render.hpp>
 #include <vector>
