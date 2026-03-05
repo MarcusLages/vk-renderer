@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <stdexcept>
 
 namespace mvmath {
 
@@ -67,6 +68,22 @@ namespace mvmath {
         bool operator!=(vec2 v) const {
             return std::fabs(x - v.x) >= eps ||
                    std::fabs(y - v.y) >= eps;
+        }
+
+        float& operator[](int i) {
+            switch(i) {
+            case 0: return x; break;
+            case 1: return y; break;
+            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
+            }
+        }
+
+        const float& operator[](int i) const {
+            switch(i) {
+            case 0: return x; break;
+            case 1: return y; break;
+            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
+            }
         }
 
         float dot(vec2 v) const {
@@ -167,6 +184,24 @@ namespace mvmath {
             return std::fabs(x - v.x) >= eps ||
                    std::fabs(y - v.y) >= eps ||
                    std::fabs(z - v.z) >= eps;
+        }
+
+        float& operator[](int i) {
+            switch(i) {
+            case 0: return x; break;
+            case 1: return y; break;
+            case 2: return z; break;
+            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
+            }
+        }
+
+        const float& operator[](int i) const {
+            switch(i) {
+            case 0: return x; break;
+            case 1: return y; break;
+            case 2: return z; break;
+            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
+            }
         }
 
         float dot(vec3 v) const {
