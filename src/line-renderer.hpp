@@ -6,11 +6,10 @@
 namespace vkr {
 
     struct LineRenderer : public IRenderer {
-        static constexpr Color DEF_LINE_COL = COL_WHITE;
         Color line_col;
 
-        LineRenderer(IFrameBuffer& fb, Model& model, Color line_col = DEF_LINE_COL) 
-            : IRenderer(fb, model) {}
+        LineRenderer(IFrameBuffer& fb, Model& model, Color line_col = COL_WHITE) 
+            : IRenderer(fb, model), line_col(line_col) {}
 
         static void draw_point(mvmath::vec2 v, vkr::Color col, vkr::IFrameBuffer &fb);
 

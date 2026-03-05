@@ -14,12 +14,14 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    constexpr int width  = 64;
-    constexpr int height = 64;
-    vkr::Model model(argv[1]);
+    constexpr int width  = 800;
+    constexpr int height = 800;
     
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();
+
+    vkr::Model model(argv[1]);
+    vkr::LineRenderer render(tga_fb, model);
 
     // vkr::sdl::SDLTarget sdl(width, height);
     // auto& sdl_fb = sdl.framebuffer();
@@ -28,7 +30,8 @@ int main(int argc, char** argv) {
     mvmath::vec2 b = { 12, 37};
     mvmath::vec2 c = { 62, 53};
 
-    vkr::LineRenderer::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
+    // vkr::LineRenderer::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
+    render.render();
 
     tga.present();
     // sdl.run();

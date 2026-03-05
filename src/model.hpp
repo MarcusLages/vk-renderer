@@ -6,12 +6,14 @@
 namespace vkr {
     
     // Adaptation from tinyrenderer by ssloy
+    // TODO: change code later to make faces store triples
     class Model {
-        std::tuple<float, float> vert_range = {}; // Min-max of vertex coordinates (def = {-1, 1})
         std::vector<mvmath::vec3> vertices = {};
         std::vector<int> faces = {};
-
+        
     public:
+        const std::tuple<float, float> vert_range = {}; // Min-max of vertex coordinates (def = {-1, 1})
+        
         Model(const std::string filename, float min_vrange = -1, float max_vrange = 1);
         
         mvmath::vec3 vert(const int i) const { 
