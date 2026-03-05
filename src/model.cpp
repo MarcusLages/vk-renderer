@@ -6,7 +6,8 @@
 namespace vkr {
 
     // Adaptation from tinyrenderer by ssloy
-    Model::Model(const std::string filename) {
+    Model::Model(const std::string filename, float min_vrange, float max_vrange)
+    : vert_range(min_vrange, max_vrange) {
         std::ifstream in;
         in.open(filename, std::ifstream::in);
         if (in.fail()) return;
