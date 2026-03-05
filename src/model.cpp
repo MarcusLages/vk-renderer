@@ -30,13 +30,13 @@ namespace vkr {
                     faces.push_back(--f);
                     cnt++;
                 }
-                if (3!=cnt) {
+                if (cnt!=3) {
                     std::cerr << "Error: the obj file is supposed to be triangulated" << std::endl;
                     return;
                 }
             }
         }
-        std::cerr << "# v# " << verts_len() << " f# "  << faces_len() << std::endl;
+        std::cout << "# v# " << verts_len() << " f# "  << faces_len() << std::endl;
     }
 
 }

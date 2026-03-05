@@ -13,16 +13,16 @@ namespace vkr {
         vkr::Color col,
         vkr::IFrameBuffer &fb
     ) {
-        if(a.x > b.x) { // So incrementing actually goes from a to b
-            std::swap(a.x, b.x);
-            std::swap(a.y, b.y);
-        }
-        
-        const bool is_transposed = std::abs(b.y - a.y) > b.x - a.x;
+        const bool is_transposed = std::abs(b.y - a.y) > std::abs(b.x - a.x);
         if(is_transposed) {
             // Swap to iterate over the longest line
             std::swap(a.x, a.y);
             std::swap(b.x, b.y);
+        }
+        
+        if(a.x > b.x) { // So incrementing actually goes from a to b
+            std::swap(a.x, b.x);
+            std::swap(a.y, b.y);
         }
         
         const float xy_ratio = (b.y - a.y) / (b.x - a.x);
@@ -42,16 +42,16 @@ namespace vkr {
         vkr::Color col,
         vkr::IFrameBuffer &fb
     ) {
-        if(a.x > b.x) { // So incrementing actually goes from a to b
-            std::swap(a.x, b.x);
-            std::swap(a.y, b.y);
-        }
-        
-        const bool is_transposed = std::abs(b.y - a.y) > b.x - a.x;
+        const bool is_transposed = std::abs(b.y - a.y) > std::abs(b.x - a.x);
         if(is_transposed) {
             // Swap to iterate over the longest line
             std::swap(a.x, a.y);
             std::swap(b.x, b.y);
+        }
+        
+        if(a.x > b.x) { // So incrementing actually goes from a to b
+            std::swap(a.x, b.x);
+            std::swap(a.y, b.y);
         }
         
         const float y_steps = std::abs(b.y - a.y);
@@ -98,7 +98,7 @@ namespace vkr {
         draw_line(c, a, col, fb);
 
         if(show_vert) {
-            const vkr::Color dot_col = (col == vkr::COL_WHITE) ? vkr::COL_BLUE : vkr::COL_WHITE;
+            const vkr::Color dot_col = (col == vkr::COL_WHITE) ? vkr::COL_GREEN : vkr::COL_WHITE;
             draw_point(a, dot_col, fb);
             draw_point(b, dot_col, fb);
             draw_point(c, dot_col, fb);
@@ -129,7 +129,7 @@ namespace vkr {
             mvmath::vec2 b = ortho_project(model.vert(i, 1), model.vert_range, frame);
             mvmath::vec2 c = ortho_project(model.vert(i, 2), model.vert_range, frame);
 
-            draw_triangle(a, b, c, line_col, fb);
+            draw_triangle(a, b, c, line_col, fb, true);
         }
     }
 
