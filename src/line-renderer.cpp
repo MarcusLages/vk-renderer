@@ -1,13 +1,13 @@
-#include "line-renderer.hpp"
 #include <algorithm>
+#include "line-renderer.hpp"
 
 namespace vkr {
 
-    void draw_point(mvmath::vec2 v, vkr::Color col, vkr::IFrameBuffer &fb) {
+    void LineRenderer::draw_point(mvmath::vec2 v, vkr::Color col, vkr::IFrameBuffer &fb) {
         fb.set(std::round(v.x), std::round(v.y), col);
     }
     
-    void draw_line(
+    void LineRenderer::draw_line(
         mvmath::vec2 a,
         mvmath::vec2 b,
         vkr::Color col,
@@ -36,7 +36,7 @@ namespace vkr {
         }
     }
     
-    void draw_line_bresenham( // It's going to be a bit slower since I use float coord
+    void LineRenderer::draw_line_bresenham( // It's going to be a bit slower since I use float coord
         mvmath::vec2 a,
         mvmath::vec2 b,
         vkr::Color col,
@@ -71,7 +71,7 @@ namespace vkr {
     }
     
     // A 2D vector of lines and their coordinates. E.g. vecs[0] = { vec2 start, vec2 end}
-    void draw_lines(
+    void LineRenderer::draw_lines(
         std::vector< std::vector< mvmath::vec2 > > vecs,
         vkr::Color col,
         vkr::IFrameBuffer &fb
@@ -85,7 +85,7 @@ namespace vkr {
         );
     }
     
-    void draw_triangle(
+    void LineRenderer::draw_triangle(
         mvmath::vec2 a,
         mvmath::vec2 b,
         mvmath::vec2 c,
@@ -93,9 +93,9 @@ namespace vkr {
         vkr::IFrameBuffer &fb,
         bool show_vert // If you would like to show the vertex
     ) {
-        draw_line_bresenham(a, b, col, fb);
-        draw_line_bresenham(b, c, col, fb);
-        draw_line_bresenham(c, a, col, fb);
+        draw_line(a, b, col, fb);
+        draw_line(b, c, col, fb);
+        draw_line(c, a, col, fb);
 
         if(show_vert) {
             const vkr::Color dot_col = (col == vkr::COL_WHITE) ? vkr::COL_BLUE : vkr::COL_WHITE;
@@ -103,6 +103,15 @@ namespace vkr {
             draw_point(b, dot_col, fb);
             draw_point(c, dot_col, fb);
         }
+    }
+
+    // Orthogonal projection to the center of the screen
+    mvmath::vec2 ortho_project(mvmath::vec3 v) {
+        // TODO
+    }
+
+    void LineRenderer::render() {
+        // TODO
     }
 
 } // namespace vkr

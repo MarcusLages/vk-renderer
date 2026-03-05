@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
     mvmath::vec2 b = { 12, 37};
     mvmath::vec2 c = { 62, 53};
 
-    vkr::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
+    vkr::LineRenderer::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
 
     tga.present();
     // sdl.run();

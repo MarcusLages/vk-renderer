@@ -1,5 +1,6 @@
 #pragma once
 #include "color.hpp"
+#include "model.hpp"
 
 namespace vkr {
 
@@ -28,6 +29,14 @@ namespace vkr {
         virtual ~IRenderTarget() = default;
         virtual IFrameBuffer& framebuffer() = 0;
         virtual void present() = 0;
+    };
+
+    struct IRenderer {
+        IFrameBuffer& fb;
+        Model& model;
+
+        IRenderer(IFrameBuffer& fb, Model& model) : fb(fb), model(model) {}
+        virtual void render() = 0;
     };
 
 }
