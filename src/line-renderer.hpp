@@ -29,8 +29,8 @@ namespace vkr {
         
         // A 2D vector of lines and their coordinates. E.g. vecs[0] = { vec2 start, vec2 end}
         static void draw_lines(
-            std::vector< std::vector< mvmath::vec2 > > vecs,
-            vkr::Color col,
+            const std::vector<std::vector< mvmath::vec2>>& vecs,
+            vkr::Color& col,
             vkr::IFrameBuffer &fb
         );
         

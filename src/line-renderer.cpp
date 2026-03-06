@@ -27,7 +27,7 @@ namespace vkr {
         
         const float xy_ratio = (b.y - a.y) / (b.x - a.x);
         float y = a.y;
-        for(int x = std::round(a.x); x <= b.x; x++) {
+        for(int x = std::round(a.x); x <= std::round(b.x); x++) {
             if(is_transposed)
                 fb.set(std::round(y), x, col);
             else
@@ -54,26 +54,27 @@ namespace vkr {
             std::swap(a.y, b.y);
         }
         
-        const float y_steps = std::abs(b.y - a.y);
-        const float x_steps = std::abs(b.x - a.x);
+        const float dy = std::abs(b.y - a.y);
+        const float dx = std::abs(b.x - a.x);
+        const int y_step = b.y > a.y ? 1 : -1;
         int y = std::round(a.y);
         int err = 0;
-        for(int x = std::round(a.x); x <= b.x; x++) {
+        for(int x = std::round(a.x); x <= std::round(b.x); x++) {
             if(is_transposed)
                 fb.set(y, x, col);
             else
                 fb.set(x, y, col);
 
-            err += 2 * y_steps;
-            y += (b.y > a.y ? 1 : -1) * (err > b.x - a.x); // int bool hack by ssloy
-            err -= (2 * x_steps) * (err > b.x - a.x);
+            err += 2 * dy;
+            y += y_step * (err > dx); // int bool hack by ssloy
+            err -= (2 * dx) * (err > dx);
         }
     }
     
     // A 2D vector of lines and their coordinates. E.g. vecs[0] = { vec2 start, vec2 end}
     void LineRenderer::draw_lines(
-        std::vector< std::vector< mvmath::vec2 > > vecs,
-        vkr::Color col,
+        const std::vector<std::vector< mvmath::vec2>>& vecs,
+        vkr::Color& col,
         vkr::IFrameBuffer &fb
     ) {
         // Just playing with c++ functional programming to be more interesting
