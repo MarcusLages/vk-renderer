@@ -5,7 +5,7 @@
 namespace vkr {
 
     constexpr int DEF_FRAME_WIDTH = 100;
-    constexpr int DEF_FRAME_HEIGHT = 60;
+    constexpr int DEF_FRAME_HEIGHT = 100;
     
     struct IFrameBuffer {
     protected:

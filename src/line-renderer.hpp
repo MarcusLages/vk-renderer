@@ -11,35 +11,35 @@ namespace vkr {
         LineRenderer(IFrameBuffer& fb, Model& model, Color line_col = COL_WHITE) 
             : IRenderer(fb, model), line_col(line_col) {}
 
-        static void draw_point(mvmath::vec2 v, vkr::Color col, vkr::IFrameBuffer &fb);
+        static void draw_point(mvmath::vec2 v, Color col, IFrameBuffer &fb);
 
         static void draw_line(
             mvmath::vec2 a,
             mvmath::vec2 b,
-            vkr::Color col,
-            vkr::IFrameBuffer &fb
+            Color col,
+            IFrameBuffer &fb
         );
 
         static void draw_line_bresenham(
             mvmath::vec2 a,
             mvmath::vec2 b,
-            vkr::Color col,
-            vkr::IFrameBuffer &fb
+            Color col,
+            IFrameBuffer &fb
         );
         
         // A 2D vector of lines and their coordinates. E.g. vecs[0] = { vec2 start, vec2 end}
         static void draw_lines(
             const std::vector<std::vector< mvmath::vec2>>& vecs,
-            vkr::Color& col,
-            vkr::IFrameBuffer &fb
+            Color& col,
+            IFrameBuffer &fb
         );
         
         static void draw_triangle(
             mvmath::vec2 a,
             mvmath::vec2 b,
             mvmath::vec2 c,
-            vkr::Color col,
-            vkr::IFrameBuffer &fb,
+            Color col,
+            IFrameBuffer &fb,
             bool show_vert = false // If you would like to show the vertex
         );
         

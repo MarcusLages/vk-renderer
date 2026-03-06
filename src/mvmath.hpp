@@ -7,10 +7,16 @@ namespace mvmath {
     inline constexpr float eps = 1e-5f;
     
     struct vec2 {
-        float x;
-        float y;
+        union {
+            float coord[2] = {0, 0};
+            struct {
+                float x;
+                float y;
+            };
+        };
 
-        constexpr vec2(float x = 0, float y = 0) : x(x), y(y) {}
+        constexpr vec2() = default;
+        constexpr vec2(float x, float y) : x(x), y(y) {}
 
         vec2 operator+(vec2 v) const{
             return { 
@@ -71,19 +77,11 @@ namespace mvmath {
         }
 
         float& operator[](int i) {
-            switch(i) {
-            case 0: return x; break;
-            case 1: return y; break;
-            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
-            }
+            return coord[i];
         }
-
+        
         const float& operator[](int i) const {
-            switch(i) {
-            case 0: return x; break;
-            case 1: return y; break;
-            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
-            }
+            return coord[i];
         }
 
         float dot(vec2 v) const {
@@ -111,12 +109,17 @@ namespace mvmath {
     };
     
     struct vec3 {
-        float x;
-        float y;
-        float z;
+        union {
+            float coord[3] = {0, 0, 0};
+            struct {
+                float x;
+                float y;
+                float z;
+            };
+        };
 
-        constexpr vec3(float x = 0, float y = 0, float z = 0) 
-            : x(x), y(y), z(z) {}
+        constexpr vec3() = default;
+        constexpr vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
         vec3 operator+(vec3 v) const{
             return { 
@@ -187,21 +190,11 @@ namespace mvmath {
         }
 
         float& operator[](int i) {
-            switch(i) {
-            case 0: return x; break;
-            case 1: return y; break;
-            case 2: return z; break;
-            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
-            }
+            return coord[i];
         }
 
         const float& operator[](int i) const {
-            switch(i) {
-            case 0: return x; break;
-            case 1: return y; break;
-            case 2: return z; break;
-            default: throw std::out_of_range("Index " + std::to_string(i) + " is out of bounds.");
-            }
+            return coord[i];
         }
 
         float dot(vec3 v) const {
