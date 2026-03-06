@@ -1,17 +1,8 @@
 #include <algorithm>
+#include "render-utils.hpp"
 #include "flat-rasterizer.hpp"
 
 namespace vkr {
-    
-    void ysort_verts(
-        mvmath::vec2& a,
-        mvmath::vec2& b,
-        mvmath::vec2& c
-    ) {
-        if(a.y > b.y) std::swap(a, b);
-        if(a.y > c.y) std::swap(a, c);
-        if(b.y > c.y) std::swap(b, c);
-    }
 
     void FlatRasterizer::draw_point(
         mvmath::vec2 v,
@@ -38,7 +29,7 @@ namespace vkr {
             IFrameBuffer &fb,
             bool show_vert // If you would like to show the vertex
     ) {
-        ysort_verts(a, b, c);
+        ysort(a, b, c);
         const int i_ay = std::round(a.y);
         const int i_by = std::round(b.y);
         const int i_cy = std::round(c.y);

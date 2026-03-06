@@ -106,29 +106,12 @@ namespace vkr {
         }
     }
 
-    // Orthogonal projection to the center of the screen from a model
-    mvmath::vec2 ortho_project(
-        mvmath::vec3 v,
-        std::tuple<float, float> v_range,
-        std::tuple<int, int> frame
-    ) {
-        auto [min, max] = v_range;
-        auto [width, height] = frame;
-
-        // We use height for both x and y so the model  fits on the center
-        // square on the screen and it doesn't get stretched
-        return {
-            (height / (max - min)) * v.x + width / 2.f,
-            (height / (max - min)) * v.y + height / 2.f
-        };
-    }
-
     void LineRenderer::render() {
         std::tuple<int, int> frame = { fb.width(), fb. height() };
         for(int i = 0; i < model.faces_len(); i++) {
-            mvmath::vec2 a = ortho_project(model.vert(i, 0), model.vert_range, frame);
-            mvmath::vec2 b = ortho_project(model.vert(i, 1), model.vert_range, frame);
-            mvmath::vec2 c = ortho_project(model.vert(i, 2), model.vert_range, frame);
+            mvmath::vec2 a = mvmath::central_ortho_project(model.vert(i, 0), model.vert_range, frame);
+            mvmath::vec2 b = mvmath::central_ortho_project(model.vert(i, 1), model.vert_range, frame);
+            mvmath::vec2 c = mvmath::central_ortho_project(model.vert(i, 2), model.vert_range, frame);
 
             draw_triangle(a, b, c, line_col, fb, true);
         }
