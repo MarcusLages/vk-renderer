@@ -9,6 +9,7 @@ set(SOURCES
     src/sdl-render.cpp
     src/model.cpp
     src/line-renderer.cpp
+    src/flat-rasterizer.cpp
     src/main.cpp
 )
 
