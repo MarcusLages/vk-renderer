@@ -15,28 +15,34 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    constexpr int width  = 64;
-    constexpr int height = 64;
+    constexpr int width  = 800;
+    constexpr int height = 800;
     
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();
 
-    // vkr::sdl::SDLTarget sdl(width, height);
-    // auto& sdl_fb = sdl.framebuffer();
+    vkr::sdl::SDLTarget sdl(width, height);
+    auto& sdl_fb = sdl.framebuffer();
 
-    // vkr::Model model(argv[1]);
+    vkr::Model model(argv[1]);
     // vkr::LineRenderer render(sdl_fb, model);
+    // vkr::LineRenderer tga_render(tga_fb, model);
+    // vkr::LineRenderer sdl_render(sdl_fb, model);
+    vkr::FlatRasterizer tga_render(tga_fb, model);
+    vkr::FlatRasterizer sdl_render(sdl_fb, model);
 
     mvmath::vec2 a = {7, 3};
     mvmath::vec2 b = {12, 37};
     mvmath::vec2 c = {62, 53};
 
     // vkr::LineRenderer::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
-    vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_GREEN, tga_fb);
-    // render.render();
+    // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_GREEN, tga_fb);
+
+    tga_render.render();
+    sdl_render.render();
 
     tga.present();
-    // sdl.run();
+    sdl.run();
 
     return 0;
 }

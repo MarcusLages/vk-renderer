@@ -65,4 +65,19 @@ namespace vkr {
         }
     }
 
+    void FlatRasterizer::render() {
+        std::tuple<int, int> frame = { fb.width(), fb. height() };
+        for(int i = 0; i < model.faces_len(); i++) {
+            mvmath::vec2 a = mvmath::central_ortho_project(model.vert(i, 0), model.vert_range, frame);
+            mvmath::vec2 b = mvmath::central_ortho_project(model.vert(i, 1), model.vert_range, frame);
+            mvmath::vec2 c = mvmath::central_ortho_project(model.vert(i, 2), model.vert_range, frame);
+
+            draw_triangle_scanline(
+                a, b, c,
+                (is_color_rand) ? get_rand_col() : triang_col, 
+                fb
+            );
+        }
+    }
+
 } // namespace vkr
