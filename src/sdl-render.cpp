@@ -30,6 +30,8 @@ namespace vkr {
         Color SDLFrameBuffer::get(const int x, const int y) const {
             if (x < 0 || y < 0 || x >= w || y >= h) return {};
 
+            // - 1 since it's in range [0, h-1], and h - y because the y-axis 
+            // is flipped in sdl
             const int real_y = h - y - 1;
             std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
             std::uint32_t pixel = pixel_frame[real_y * surf->w + x];
@@ -42,6 +44,8 @@ namespace vkr {
         void SDLFrameBuffer::set(const int x, const int y, const Color &c) {
             if (x < 0 || y < 0 || x >= w || y >= h) return;
 
+            // - 1 since it's in range [0, h-1], and h - y because the y-axis 
+            // is flipped in sdl
             const int real_y = h - y - 1;
             std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
             std::uint32_t pixel = SDL_MapRGBA(surf->format, c.r, c.g, c.b, c.a);

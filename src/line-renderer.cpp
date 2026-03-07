@@ -65,6 +65,7 @@ namespace vkr {
             else
                 fb.set(x, y, col);
 
+            // The multiplication by 2 is used to avoid division in half
             err += 2 * dy;
             y += y_step * (err > dx); // int bool hack by ssloy
             err -= (2 * dx) * (err > dx);
@@ -72,8 +73,9 @@ namespace vkr {
     }
     
     // A 2D vector of lines and their coordinates. E.g. vecs[0] = { vec2 start, vec2 end}
+    // TODO: change this to use vector of tuples
     void LineRenderer::draw_lines(
-        const std::vector<std::vector< mvmath::vec2>>& vecs,
+        const std::vector<std::vector<mvmath::vec2>>& vecs,
         vkr::Color& col,
         vkr::IFrameBuffer &fb
     ) {

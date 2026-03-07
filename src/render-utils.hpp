@@ -16,11 +16,13 @@ namespace vkr {
     }
 
     inline Color get_rand_col() {
+        // I have no idea how to name this constant, but either way, you understood it
+        constexpr int UINT8_OVERLOAD = Color::MAX_COLOR_CHANNEL + 1;
         return {
-            static_cast<uint8_t>(std::rand() % 256), // Pseudo random since I didn't set a seed
-            static_cast<uint8_t>(std::rand() % 256),
-            static_cast<uint8_t>(std::rand() % 256),
-            255
+            static_cast<uint8_t>(std::rand() % UINT8_OVERLOAD), // Pseudo random since I didn't set a seed
+            static_cast<uint8_t>(std::rand() % UINT8_OVERLOAD),
+            static_cast<uint8_t>(std::rand() % UINT8_OVERLOAD),
+            Color::MAX_COLOR_CHANNEL
         };
     }
     

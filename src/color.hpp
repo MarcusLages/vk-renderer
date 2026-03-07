@@ -4,8 +4,10 @@
 namespace vkr {
 
     struct Color {
+        static constexpr std::uint8_t MAX_COLOR_CHANNEL = 0xFF;
+
         union {
-            std::uint8_t rgba[4] = {0, 0, 0, 0};
+            std::uint8_t rgba[4] = {0, 0, 0, 0}; // Transparent black
             struct {
                 std::uint8_t r;
                 std::uint8_t g;
