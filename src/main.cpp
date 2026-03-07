@@ -11,7 +11,7 @@
 
 int main(int argc, char** argv) {
     if(argc <= 1) {
-        std::cout << "Usage: " + std::string(argv[0]) + " <filename.obj>." ;
+        std::cout << "Usage: " + std::string(argv[0]) + " <filename.obj>.";
         return 1;
     }
 
@@ -26,20 +26,25 @@ int main(int argc, char** argv) {
 
     vkr::Model model(argv[1]);
     // vkr::LineRenderer render(sdl_fb, model);
-    // vkr::LineRenderer tga_render(tga_fb, model);
-    // vkr::LineRenderer sdl_render(sdl_fb, model);
-    vkr::FlatRasterizer tga_render(tga_fb, model);
-    vkr::FlatRasterizer sdl_render(sdl_fb, model);
+    vkr::LineRenderer tga_line_render(tga_fb, model, vkr::COL_BLUE);
+    vkr::LineRenderer sdl_line_render(sdl_fb, model, vkr::COL_BLUE);
+    vkr::FlatRasterizer tga_flat_render(tga_fb, model);
+    vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
 
-    mvmath::vec2 a = {7, 3};
-    mvmath::vec2 b = {12, 37};
-    mvmath::vec2 c = {62, 53};
+    mvmath::vec2 a = {600, 600};
+    mvmath::vec2 b = {650, 600};
+    mvmath::vec2 c = {600, 600};
 
     // vkr::LineRenderer::draw_triangle(a, b, c, vkr::COL_GREEN, tga_fb, true);
     // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_GREEN, tga_fb);
-
-    tga_render.render();
-    sdl_render.render();
+    
+    tga_flat_render.render();
+    sdl_flat_render.render();
+    // tga_line_render.render();
+    // sdl_line_render.render();
+    
+    // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, tga_fb);
+    // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, sdl_fb);
 
     tga.present();
     sdl.run();

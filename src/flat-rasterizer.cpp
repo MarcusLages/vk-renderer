@@ -30,39 +30,40 @@ namespace vkr {
             bool show_vert // If you would like to show the vertex
     ) {
         ysort(a, b, c);
+        // Used just for equality checking
         const int i_ay = std::round(a.y);
         const int i_by = std::round(b.y);
         const int i_cy = std::round(c.y);
 
         const float ac_t = ((c.x - a.x) / (c.y - a.y));
-        const float ab_t = ((b.x - a.x) / (b.y - a.y));
-        const float bc_t = ((c.x - b.x) / (c.y - b.y));
-
-        // float total_height = c.y - a.y;
-
+        
         if(i_ay != i_by) {
-            for(int y = i_ay; y <= i_by; y++) {
-                int ac_x = static_cast<int>(std::round(a.x + (y - a.y) * ac_t));
-                int ab_x = static_cast<int>(std::round(a.x + (y - a.y) * ab_t));
+            const float ab_t = ((b.x - a.x) / (b.y - a.y));
+            // y is used as float here because of possible precision loss when calculating x
+            for(float y = a.y; y <= b.y; y++) {
+                int ac_x = std::round(a.x + (y - a.y) * ac_t);
+                int ab_x = std::round(a.x + (y - a.y) * ab_t);
                 auto [min, max] = std::minmax<int>(ab_x, ac_x);
                 
                 for(int x = min; x <= max; x++) {
                     fb.set(x, y, col);
+                }
+            }
+        }
+        if(i_by != i_cy) {
+            const float bc_t = ((c.x - b.x) / (c.y - b.y));
+            // y is used as float here because of possible precision loss when calculating x
+            for(float y = b.y; y <= c.y; y++) {
+                int ac_x = std::round(a.x + (y - a.y) * ac_t);
+                int bc_x = std::round(b.x + (y - b.y) * bc_t);
+                auto [min, max] = std::minmax<int>(bc_x, ac_x);
+                
+                for(int x = min; x <= max; x++) {
                     fb.set(x, y, col);
                 }
             }
         }
 
-        for(int y = i_by; y <= i_cy; y++) {
-            int ac_x = static_cast<int>(std::round(a.x + (y - a.y) * ac_t));
-            int bc_x = static_cast<int>(std::round(b.x + (y - b.y) * bc_t));
-            auto [min, max] = std::minmax<int>(bc_x, ac_x);
-            
-            for(int x = min; x <= max; x++) {
-                fb.set(x, y, col);
-                fb.set(x, y, col);
-            }
-        }
     }
 
     void FlatRasterizer::render() {
