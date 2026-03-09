@@ -232,9 +232,17 @@ namespace mvmath {
     inline constexpr vec2 Vec2Zero = {0.0f, 0.0f};
     inline constexpr vec3 Vec3Zero = {0.0f, 0.0f, 0.0f};
     
+    // TODO: Change the calculation (using cross product so not as optimal)
+    inline float signed_tri_area(vec2 a, vec2 b, vec2 c) {
+        vec3 ab = {b.x - a.x, b.y - a.y, 1};
+        vec3 ac = {c.x - a.x, c.y - a.y, 1};
+        return ab.cross(ac).z / 2;
+    }
+
+
     // Orthogonal projection to the center of the screen from a model
     inline mvmath::vec2 central_ortho_project(
-        mvmath::vec3 v,
+        vec3 v,
         std::tuple<float, float> v_range,
         std::tuple<int, int> frame
     ) {
@@ -248,4 +256,5 @@ namespace mvmath {
             (height / (max - min)) * v.y + height / 2.f
         };
     }
+
 };

@@ -21,8 +21,7 @@ namespace vkr {
             mvmath::vec2 b,
             mvmath::vec2 c,
             Color col,
-            IFrameBuffer &fb,
-            bool show_vert = false // If you would like to show the vertex
+            IFrameBuffer &fb
         );
 
         static void draw_triangle_scanline(
@@ -30,11 +29,11 @@ namespace vkr {
             mvmath::vec2 b,
             mvmath::vec2 c,
             Color col,
-            IFrameBuffer &fb,
-            bool show_vert = false // If you would like to show the vertex
+            IFrameBuffer &fb
         );
 
         void render() override;
+        void render_scanline();
     };
 
 }
