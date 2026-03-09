@@ -22,6 +22,7 @@ namespace vkr {
         mvmath::vec2 min_box = { std::min(std::min(a.x, b.x), c.x), std::min(std::min(a.y, b.y), c.y) };
         mvmath::vec2 max_box = { std::max(std::max(a.x, b.x), c.x), std::max(std::max(a.y, b.y), c.y) };
         float total_area = mvmath::signed_tri_area(a, b, c);
+        if(total_area < 1) return;
 
         // TODO: make this concurrent (OpenMP or another thing), can't do it now because of sdl
         // #pragma omp parallel for
