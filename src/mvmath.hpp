@@ -232,13 +232,20 @@ namespace mvmath {
     inline constexpr vec2 Vec2Zero = {0.0f, 0.0f};
     inline constexpr vec3 Vec3Zero = {0.0f, 0.0f, 0.0f};
     
-    // TODO: Change the calculation (using cross product so not as optimal)
-    inline float signed_tri_area(vec2 a, vec2 b, vec2 c) {
+    // This version uses cross product so it performs more calculations and
+    // executes more code, but it is a cool naive formula
+    inline float signed_tri_area_cross(vec2 a, vec2 b, vec2 c) {
         vec3 ab = {b.x - a.x, b.y - a.y, 1};
         vec3 ac = {c.x - a.x, c.y - a.y, 1};
         return ab.cross(ac).z / 2;
     }
 
+    // Uses Gauss shoelace formula (basically calculates the determinant of 3x3)
+    // It's order dependent, but it's faster and .obj files make sure to always
+    // follow a counter clockwise order so there's no problem
+    inline float signed_tri_area(vec2 a, vec2 b, vec2 c) {
+        return (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y)) * 0.5;
+    }
 
     // Orthogonal projection to the center of the screen from a model
     inline mvmath::vec2 central_ortho_project(
