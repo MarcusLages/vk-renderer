@@ -12,6 +12,7 @@ namespace vkr {
         fb.set(std::round(v.x), std::round(v.y), col);
     }
 
+    // TODO: Might as well just make this use integer vectors
     void FlatRasterizer::draw_triangle(
             mvmath::vec2 a,
             mvmath::vec2 b,
@@ -19,21 +20,25 @@ namespace vkr {
             Color col,
             IFrameBuffer &fb
     ) {
-        mvmath::vec2 min_box = { std::min(std::min(a.x, b.x), c.x), std::min(std::min(a.y, b.y), c.y) };
-        mvmath::vec2 max_box = { std::max(std::max(a.x, b.x), c.x), std::max(std::max(a.y, b.y), c.y) };
+        mvmath::vec2 min_box = { std::round(std::min(std::min(a.x, b.x), c.x)), std::round(std::min(std::min(a.y, b.y), c.y)) };
+        mvmath::vec2 max_box = { std::round(std::max(std::max(a.x, b.x), c.x)), std::round(std::max(std::max(a.y, b.y), c.y)) };
         float total_area = mvmath::signed_tri_area(a, b, c);
+
+        // Less than one because we are skipping triangles facing the wrong direction
+        // or that have an area less than 1 pixel
         if(total_area < 1) return;
 
         // TODO: make this concurrent (OpenMP or another thing), can't do it now because of sdl
         // #pragma omp parallel for
         for(float x = min_box.x; x <= max_box.x; x++) {
             for(float y = min_box.y; y <= max_box.y; y++) {
-                float alpha = mvmath::signed_tri_area({x, y}, b, c) / total_area;
-                float beta = mvmath::signed_tri_area(a, {x, y}, c) / total_area;
-                float gamma = mvmath::signed_tri_area(a, b, {x, y}) / total_area;
+                mvmath::vec2 p = {x, y};
+                float alpha = mvmath::signed_tri_area(p, b, c) / total_area;
+                float beta = mvmath::signed_tri_area(a, p, c) / total_area;
+                float gamma = mvmath::signed_tri_area(a, b, p) / total_area;
 
                 if(alpha < 0 || beta < 0 || gamma < 0) continue;
-                fb.set(std::round(x), std::round(y), col);
+                fb.set(x, y, col);
             }
         }
     }
