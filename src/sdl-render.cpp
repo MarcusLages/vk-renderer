@@ -11,7 +11,7 @@ namespace vkr {
         }
 
         void SDLFrameBuffer::init(SDL_Surface* surf) {
-            surf = surf;
+            this->surf = surf;
             h = surf->h;
             w = surf->w;
         }
