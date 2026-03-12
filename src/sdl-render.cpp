@@ -14,37 +14,54 @@ namespace vkr {
             this->surf = surf;
             h = surf->h;
             w = surf->w;
+
+            buffer.assign(surf->h * surf->w, Color{});
+            depth.assign(surf->h * surf->w, std::numeric_limits<float>::max());
         }
 
-        //! Returns transparent black (Color{}) if out of bounds
-        Color SDLFrameBuffer::get(const int x, const int y) const {
-            if (x < 0 || y < 0 || x >= w || y >= h) return {};
+        void SDLFrameBuffer::update_surface() {
+            SDL_LockSurface(surf);
 
-            // - 1 since it's in range [0, h-1], and h - y because the y-axis 
-            // is flipped in sdl
-            const int real_y = h - y - 1;
-            std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
-            std::uint32_t pixel = pixel_frame[real_y * surf->w + x];
+            int real_y = 0;
+            for(int y = 0; y < h; y++) {
+                for(int x = 0; x < w; x++) {
+                    // - 1 since it's in range [0, h-1], 
+                    // and h - y because the y-axis is flipped in sdl
+                    real_y = h - y - 1;
+
+                    Color& c = buffer[y * w + x];
+                    std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
+                    std::uint32_t pixel = SDL_MapRGBA(surf->format, c.r, c.g, c.b, c.a);
+                    pixel_frame[real_y * surf->w + x] = pixel;
+                }
+            }
             
-            Color c;
-            SDL_GetRGBA(pixel, surf->format, &(c.r), &(c.g), &(c.b), &(c.a));
-            return c;
+            SDL_UnlockSurface(surf);
         }
-        
-        void SDLFrameBuffer::set(const int x, const int y, const Color &c) {
-            if (x < 0 || y < 0 || x >= w || y >= h) return;
 
-            // - 1 since it's in range [0, h-1], and h - y because the y-axis 
-            // is flipped in sdl
-            const int real_y = h - y - 1;
-            std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
-            std::uint32_t pixel = SDL_MapRGBA(surf->format, c.r, c.g, c.b, c.a);
-            pixel_frame[real_y * surf->w + x] = pixel;
+        Color SDLFrameBuffer::get(const int x, const int y) const {
+            return buffer[y * w + x];
+        }
+
+        float SDLFrameBuffer::get_z(const int x, const int y) const {
+            return depth[y * w + x];
+        }
+
+        // Not the best, use only if doing one-face models and does not need
+        // z-buffer/depth-buffer
+        void SDLFrameBuffer::set(const int x, const int y, const Color& c) {
+            buffer[y * w + x] = c;
+        }
+
+        void SDLFrameBuffer::set(const int x, const int y, const float z, const Color& c) {
+            buffer[y * w + x] = c;
+            depth[y * w + x] = z;
         }
 
         void SDLFrameBuffer::clear() {
-            // 0x0 is uint32_t representing rgba(0, 0, 0, 0)
-            SDL_FillRect(surf, nullptr, 0x0);
+            // ! Default clear color is transparent black or {0, 0, 0, 0}
+            std::fill(buffer.begin(), buffer.end(), Color{});
+            std::fill(depth.begin(), depth.end(), std::numeric_limits<float>::max());
         }
 
         SDLTarget::SDLTarget(int w, int h, std::string window_name) 
@@ -80,6 +97,7 @@ namespace vkr {
         }
         
         void SDLTarget::present() {
+            fb.update_surface();
             SDL_UpdateWindowSurface(win);
         }
         
@@ -87,8 +105,11 @@ namespace vkr {
         void SDLTarget::run() {
             bool quit = false;
             SDL_Event e;
+            present();
+            
             while(!quit) {
-                present();
+                // TODO: update the loop better
+                SDL_UpdateWindowSurface(win);
                 while(SDL_PollEvent(&e))
                     if(e.type == SDL_QUIT)
                         quit = true;
