@@ -18,7 +18,6 @@ namespace vkr {
             ~SDLFrameBuffer();
 
             // Should be called if the default constructor was used
-            int init(SDL_Window* window);
             void init(SDL_Surface* surf);
             //! Returns transparent black (Color{}) if out of bounds
             Color get(const int x, const int y) const override;

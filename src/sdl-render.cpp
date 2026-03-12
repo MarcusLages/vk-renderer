@@ -10,16 +10,6 @@ namespace vkr {
             surf = nullptr;
         }
 
-        int SDLFrameBuffer::init(SDL_Window* window) {
-            surf = SDL_GetWindowSurface(window);
-            if(!surf) {
-                return -1; // TODO: change to error code
-            }
-            h = surf->h;
-            w = surf->w;
-            return 0;
-        }
-
         void SDLFrameBuffer::init(SDL_Surface* surf) {
             surf = surf;
             h = surf->h;
@@ -74,11 +64,14 @@ namespace vkr {
                 throw std::runtime_error("SDL wasn't able to create a window.");
             }
             
-            if(fb.init(win)) {
+            SDL_Surface* surf = SDL_GetWindowSurface(win);
+            if(!surf) {
                 SDL_DestroyWindow(win);
                 SDL_Quit();
                 throw std::runtime_error("SDL wasn't able to initiallize surface framebuffer.");
             }
+
+            fb.init(surf);
         }
 
         SDLTarget::~SDLTarget() {

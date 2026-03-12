@@ -194,8 +194,7 @@ namespace vkr {
                 return {};
             TGAColor ret = {0, 0, 0, 0, bpp};
             const std::uint8_t *p = data.data() + (x + y * w) * bpp;
-            for (int i = bpp; i--; ret.bgra[i] = p[i])
-                ;
+            for (int i = bpp; i--; ret.bgra[i] = p[i]);
             return ret.to_color();
         }
     
