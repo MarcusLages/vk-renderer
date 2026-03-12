@@ -7,6 +7,8 @@ namespace vkr {
     constexpr int DEF_FRAME_WIDTH = 100;
     constexpr int DEF_FRAME_HEIGHT = 100;
     
+    // TODO: maybe make a new kind of framebuffer that has a z-buffer instead 
+    //       of mandatorily having z-buffer in all of them
     struct IFrameBuffer {
     protected:
         int w = DEF_FRAME_WIDTH;
@@ -18,7 +20,9 @@ namespace vkr {
         virtual ~IFrameBuffer() = default;
     
         virtual Color get(const int x, const int y) const = 0;
+        virtual float get_z(const int x, const int y) const = 0;
         virtual void set(const int x, const int y, const Color &c) = 0;
+        virtual void set(const int x, const int y, const float z, const Color &c) = 0;
         virtual void clear() = 0;
     
         constexpr int width() const { return w; }

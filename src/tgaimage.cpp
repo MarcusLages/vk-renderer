@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <cstring>
 #include "tgaimage.h"
 
@@ -7,7 +8,8 @@ namespace vkr {
 
         // Adaptation from tinyrenderer by ssloy
         // auto init vector data
-        TGAImage::TGAImage(const int w, const int h, const int bpp) : IFrameBuffer(w, h), bpp(bpp), data(w * h * bpp, 0) {}
+        TGAImage::TGAImage(const int w, const int h, const int bpp) 
+            : IFrameBuffer(w, h), bpp(bpp), data(w * h * bpp, 0), depth(w * h, std::numeric_limits<float>::max()) {}
     
         bool TGAImage::read_tga_file(const std::string filename) {
             std::ifstream in;
@@ -197,21 +199,32 @@ namespace vkr {
             for (int i = bpp; i--; ret.bgra[i] = p[i]);
             return ret.to_color();
         }
+
+        float TGAImage::get_z(const int x, const int y) const {
+            return depth[y * w + x];
+        }
     
         void TGAImage::set(int x, int y, const Color &c) {
             TGAColor tc = TGAColor(c);
             if (!data.size() || x < 0 || y < 0 || x >= w || y >= h)
-                return;
+            return;
             memcpy(data.data() + (x + y * w) * bpp, tc.bgra, bpp);
         }
-    
+
+        void TGAImage::set(int x, int y, float z, const Color &c) {
+            set(x, y, c);
+            depth[y * w + x] = z;
+        }
+
         void TGAImage::set(int x, int y, const TGAColor &c) {
             if (!data.size() || x < 0 || y < 0 || x >= w || y >= h)
                 return;
             memcpy(data.data() + (x + y * w) * bpp, c.bgra, bpp);
         }
     
-        void TGAImage::clear() {}
+        void TGAImage::clear() {
+            std::fill(depth.begin(), depth.end(), std::numeric_limits<float>::max());
+        }
     
         void TGAImage::flip_horizontally() {
             for (int i = 0; i < w / 2; i++)

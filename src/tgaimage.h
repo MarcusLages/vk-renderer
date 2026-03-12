@@ -50,6 +50,7 @@ namespace vkr {
             enum Format { GRAYSCALE=1, RGB=3, RGBA=4 };
             std::uint8_t bpp = 0; // Bytes per pixel
             std::vector<std::uint8_t> data = {};
+            std::vector<float> depth = {};
             TGAImage() = default;
             TGAImage(const int w, const int h, const int bpp);
             bool  read_tga_file(const std::string filename);
@@ -57,8 +58,10 @@ namespace vkr {
             void flip_horizontally();
             void flip_vertically();
             Color get(const int x, const int y) const override;
+            float get_z(const int x, const int y) const override;
             void set(const int x, const int y, const Color &c) override;
             void set(const int x, const int y, const TGAColor &c);
+            void set(const int x, const int y, const float z, const Color &c) override;
             void clear() override;
         private:
             bool   load_rle_data(std::ifstream &in);

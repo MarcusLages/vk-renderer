@@ -12,7 +12,6 @@ namespace vkr {
         fb.set(std::round(v.x), std::round(v.y), col);
     }
 
-    // TODO: Might as well just make this use integer vectors
     void FlatRasterizer::draw_triangle(
             mvmath::vec2 a,
             mvmath::vec2 b,

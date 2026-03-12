@@ -10,7 +10,6 @@ namespace vkr {
 
         const std::string DEF_WINDOW_NAME = "vkr";
 
-        //! Will have to create my own inner framebuffer vector later to make sure concurrency is right
         struct SDLFrameBuffer : public IFrameBuffer {
             std::vector<Color> buffer;
             std::vector<float> depth;
@@ -28,12 +27,11 @@ namespace vkr {
             void init(SDL_Surface* surf);
             void update_surface();
             
-            // TODO: add z-related functions to IFrameBuffers
             //! Returns transparent black (Color{}) if out of bounds
             Color get(const int x, const int y) const override;
-            float get_z(const int x, const int y) const;
+            float get_z(const int x, const int y) const override;
             void set(const int x, const int y, const Color &c) override;
-            void set(const int x, const int y, const float z, const Color &c);
+            void set(const int x, const int y, const float z, const Color &c) override;
             void clear() override;
         };
         
