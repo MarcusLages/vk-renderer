@@ -24,11 +24,20 @@ namespace vkr {
             IFrameBuffer &fb
         );
 
+        // Uses the z-buffer when rendering
         static void draw_triangle_zbuf(
             mvmath::vec3 a,
             mvmath::vec3 b,
             mvmath::vec3 c,
             Color col,
+            IFrameBuffer &fb
+        );
+
+        // Renders the z-buffer (depth buffer) in grayscale
+        static void draw_triangle_depth(
+            mvmath::vec3 a,
+            mvmath::vec3 b,
+            mvmath::vec3 c,
             IFrameBuffer &fb
         );
 
@@ -41,6 +50,7 @@ namespace vkr {
         );
 
         void render() override;
+        void render_depth();
         void render_scanline();
     };
 

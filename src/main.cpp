@@ -30,8 +30,8 @@ int main(int argc, char** argv) {
     vkr::FlatRasterizer tga_flat_render(tga_fb, model);
     vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
 
-    tga_flat_render.render();
-    sdl_flat_render.render();
+    tga_flat_render.render_depth();
+    sdl_flat_render.render_depth();
     // tga_line_render.render();
     // sdl_line_render.render();
     
