@@ -42,6 +42,43 @@ namespace vkr {
         }
     }
 
+    void FlatRasterizer::draw_triangle_zbuf(
+            mvmath::vec3 a,
+            mvmath::vec3 b,
+            mvmath::vec3 c,
+            Color col,
+            IFrameBuffer &fb
+    ) {
+        mvmath::vec2 a_v2 = {a.x, a.y};
+        mvmath::vec2 b_v2 = {b.x, b.y};
+        mvmath::vec2 c_v2 = {c.x, c.y};
+        mvmath::vec2 min_box = { std::round(std::min(std::min(a.x, b.x), c.x)), std::round(std::min(std::min(a.y, b.y), c.y)) };
+        mvmath::vec2 max_box = { std::round(std::max(std::max(a.x, b.x), c.x)), std::round(std::max(std::max(a.y, b.y), c.y)) };
+        float total_area = mvmath::signed_tri_area(a_v2, b_v2, c_v2);
+
+        // Less than one because we are skipping triangles facing the wrong direction
+        // or that have an area less than 1 pixel
+        if(total_area < 1) return;
+
+        // TODO: make this concurrent (OpenMP or another thing), can't do it now because of sdl
+        // #pragma omp parallel for
+        for(float x = min_box.x; x <= max_box.x; x++) {
+            for(float y = min_box.y; y <= max_box.y; y++) {
+                mvmath::vec2 p = {x, y};
+                float alpha = mvmath::signed_tri_area(p, b_v2, c_v2) / total_area;
+                float beta = mvmath::signed_tri_area(a_v2, p, c_v2) / total_area;
+                float gamma = mvmath::signed_tri_area(a_v2, b_v2, p) / total_area;
+                
+                if(alpha < 0 || beta < 0 || gamma < 0) continue;
+                
+                float z = a.z * alpha + b.z * beta + c.z * gamma;
+                if(z > fb.get_z(x, y)) continue;
+
+                fb.set(x, y, z, col);
+            }
+        }
+    }
+
     void FlatRasterizer::draw_triangle_scanline(
             mvmath::vec2 a,
             mvmath::vec2 b,
@@ -89,11 +126,11 @@ namespace vkr {
     void FlatRasterizer::render() {
         std::tuple<int, int> frame = { fb.width(), fb. height() };
         for(int i = 0; i < model.faces_len(); i++) {
-            mvmath::vec2 a = mvmath::central_ortho_project(model.vert(i, 0), model.vert_range, frame);
-            mvmath::vec2 b = mvmath::central_ortho_project(model.vert(i, 1), model.vert_range, frame);
-            mvmath::vec2 c = mvmath::central_ortho_project(model.vert(i, 2), model.vert_range, frame);
+            mvmath::vec3 a = mvmath::central_ortho_project_z(model.vert(i, 0), model.vert_range, frame);
+            mvmath::vec3 b = mvmath::central_ortho_project_z(model.vert(i, 1), model.vert_range, frame);
+            mvmath::vec3 c = mvmath::central_ortho_project_z(model.vert(i, 2), model.vert_range, frame);
 
-            draw_triangle(
+            draw_triangle_zbuf(
                 a, b, c,
                 (is_color_rand) ? get_rand_col() : triang_col, 
                 fb

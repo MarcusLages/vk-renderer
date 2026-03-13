@@ -24,6 +24,14 @@ namespace vkr {
             IFrameBuffer &fb
         );
 
+        static void draw_triangle_zbuf(
+            mvmath::vec3 a,
+            mvmath::vec3 b,
+            mvmath::vec3 c,
+            Color col,
+            IFrameBuffer &fb
+        );
+
         static void draw_triangle_scanline(
             mvmath::vec2 a,
             mvmath::vec2 b,
