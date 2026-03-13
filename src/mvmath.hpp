@@ -258,9 +258,13 @@ namespace mvmath {
 
         // We use height for both x and y so everything fits on the center
         // square of the frame and it doesn't get stretched or cut
+        // return {
+        //     (height / (max - min)) * v.x + width / 2.f,
+        //     (height / (max - min)) * v.y + height / 2.f
+        // };
         return {
-            (height / (max - min)) * v.x + width / 2.f,
-            (height / (max - min)) * v.y + height / 2.f
+            (v.x - min) * height / (max - min),
+            (v.y - min) * height / (max - min)
         };
     }
 
