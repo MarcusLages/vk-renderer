@@ -27,6 +27,7 @@ namespace vkr {
             w = header.width;
             h = header.height;
             bpp = header.bitsperpixel >> 3;
+            depth.assign(w * h, std::numeric_limits<float>::max());
             if (w <= 0 || h <= 0 || (bpp != GRAYSCALE && bpp != RGB && bpp != RGBA)) {
                 std::cerr << "bad bpp (or width/height) value\n";
                 return false;
@@ -201,18 +202,21 @@ namespace vkr {
         }
 
         float TGAImage::get_z(const int x, const int y) const {
+            if(x < 0 || y < 0 || x >= w || y >= h) return std::numeric_limits<float>::max();
             return depth[y * w + x];
         }
     
         void TGAImage::set(int x, int y, const Color &c) {
+            if (!data.size() || x < 0 || y < 0 || x >= w || y >= h) return;
             TGAColor tc = TGAColor(c);
-            if (!data.size() || x < 0 || y < 0 || x >= w || y >= h)
-            return;
             memcpy(data.data() + (x + y * w) * bpp, tc.bgra, bpp);
         }
 
         void TGAImage::set(int x, int y, float z, const Color &c) {
-            set(x, y, c);
+            if (!data.size() || !depth.size() || x < 0 || y < 0 || x >= w || y >= h)
+                return;
+            TGAColor tc = TGAColor(c);
+            memcpy(data.data() + (x + y * w) * bpp, tc.bgra, bpp);
             depth[y * w + x] = z;
         }
 

@@ -259,8 +259,8 @@ namespace mvmath {
         // We use height for both x and y so everything fits on the center
         // square of the frame and it doesn't get stretched or cut
         return {
-            (v.x - min) * height / (max - min),
-            (v.y - min) * height / (max - min)
+            ((v.x - min) * height) / (max - min),
+            ((v.y - min) * height) / (max - min)
         };
     }
 
@@ -280,8 +280,8 @@ namespace mvmath {
         // square of the frame and it doesn't get stretched or cut
 
         return {
-            (v.x - min) * height / (max - min),
-            (v.y - min) * height / (max - min),
+            ((v.x - min) * height) / (max - min),
+            ((v.y - min) * height) / (max - min),
             1 - ((v.z - min) / (max - min)) // -1 to make 0=nearest, 1=farthest
         };
     }

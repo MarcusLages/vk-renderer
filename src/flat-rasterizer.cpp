@@ -124,7 +124,7 @@ namespace vkr {
     }
 
     void FlatRasterizer::render() {
-        std::tuple<int, int> frame = { fb.width(), fb. height() };
+        std::tuple<int, int> frame = { fb.width() - 1, fb. height() - 1 };
         for(int i = 0; i < model.faces_len(); i++) {
             mvmath::vec3 a = mvmath::central_ortho_project_z(model.vert(i, 0), model.vert_range, frame);
             mvmath::vec3 b = mvmath::central_ortho_project_z(model.vert(i, 1), model.vert_range, frame);
@@ -139,7 +139,7 @@ namespace vkr {
     }
 
     void FlatRasterizer::render_scanline() {
-        std::tuple<int, int> frame = { fb.width(), fb. height() };
+        std::tuple<int, int> frame = { fb.width() - 1, fb. height() - 1 };
         for(int i = 0; i < model.faces_len(); i++) {
             mvmath::vec2 a = mvmath::central_ortho_project(model.vert(i, 0), model.vert_range, frame);
             mvmath::vec2 b = mvmath::central_ortho_project(model.vert(i, 1), model.vert_range, frame);
