@@ -258,13 +258,34 @@ namespace mvmath {
 
         // We use height for both x and y so everything fits on the center
         // square of the frame and it doesn't get stretched or cut
+        return {
+            (v.x - min) * height / (max - min),
+            (v.y - min) * height / (max - min)
+        };
+    }
+
+    // Similar to the normal central orthographic projection function above 
+    // (central_ortho_project), but instead also normalizes the z coordinate
+    // instead of ignoring it
+    // (use in z-buffer calculations)
+    inline mvmath::vec3 central_ortho_project_z(
+        vec3 v,
+        std::tuple<float, float> v_range,
+        std::tuple<int, int> frame
+    ) {
+        auto [min, max] = v_range;
+        auto [width, height] = frame;
+
+        // We use height for both x and y so everything fits on the center
+        // square of the frame and it doesn't get stretched or cut
         // return {
         //     (height / (max - min)) * v.x + width / 2.f,
         //     (height / (max - min)) * v.y + height / 2.f
         // };
         return {
             (v.x - min) * height / (max - min),
-            (v.y - min) * height / (max - min)
+            (v.y - min) * height / (max - min),
+            (v.z - min) / (max - min)
         };
     }
 
