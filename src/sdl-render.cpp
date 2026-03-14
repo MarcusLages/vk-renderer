@@ -39,6 +39,27 @@ namespace vkr {
             SDL_UnlockSurface(surf);
         }
 
+        void SDLFrameBuffer::update_surface_zbuf() {
+            SDL_LockSurface(surf);
+
+            int real_y = 0;
+            for(int y = 0; y < h; y++) {
+                for(int x = 0; x < w; x++) {
+                    // - 1 since it's in range [0, h-1], 
+                    // and h - y because the y-axis is flipped in sdl
+                    real_y = h - y - 1;
+                    uint8_t intensity = static_cast<uint8_t>(depth[y * w + x] * Color::MAX_COLOR_CHANNEL);
+                    Color c = {intensity, intensity, intensity, Color::MAX_COLOR_CHANNEL};
+
+                    std::uint32_t* pixel_frame = static_cast<uint32_t*>(surf->pixels);
+                    std::uint32_t pixel = SDL_MapRGBA(surf->format, c.r, c.g, c.b, c.a);
+                    pixel_frame[real_y * surf->w + x] = pixel;
+                }
+            }
+            
+            SDL_UnlockSurface(surf);
+        }
+
         Color SDLFrameBuffer::get(const int x, const int y) const {
             return buffer[y * w + x];
         }
@@ -101,11 +122,30 @@ namespace vkr {
             SDL_UpdateWindowSurface(win);
         }
         
+        void SDLTarget::present_depth() {
+            fb.update_surface_zbuf();
+            SDL_UpdateWindowSurface(win);
+        }
+        
         // TODO: take this out later when I have a centralized runner
         void SDLTarget::run() {
             bool quit = false;
             SDL_Event e;
             present();
+            
+            while(!quit) {
+                // TODO: update the loop better
+                SDL_UpdateWindowSurface(win);
+                while(SDL_PollEvent(&e))
+                    if(e.type == SDL_QUIT)
+                        quit = true;
+            }
+        }
+        // TODO: take this out later when I have a centralized runner
+        void SDLTarget::run_depth() {
+            bool quit = false;
+            SDL_Event e;
+            present_depth();
             
             while(!quit) {
                 // TODO: update the loop better

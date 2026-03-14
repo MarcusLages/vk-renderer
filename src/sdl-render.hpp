@@ -26,6 +26,7 @@ namespace vkr {
             // Should be called if the default constructor was used
             void init(SDL_Surface* surf);
             void update_surface();
+            void update_surface_zbuf();
             
             //! Returns transparent black (Color{}) if out of bounds
             Color get(const int x, const int y) const override;
@@ -46,7 +47,11 @@ namespace vkr {
     
             IFrameBuffer& framebuffer() override { return fb; }
             void present() override;
-            void run(); // TODO: take this out later when I have a centralized runner
+            void present_depth() override;
+
+            // TODO: take this out later when I have a centralized runner
+            void run();
+            void run_depth();
         };
 
     }

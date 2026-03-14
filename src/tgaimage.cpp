@@ -247,5 +247,21 @@ namespace vkr {
         void TGATarget::present() {
             fb.write_tga_file(filename);
         }
+    
+        //! On TGATarget, rewrites the whole
+        void TGATarget::present_depth() {
+            // Writing the depth value (z-value) as color, instead of the actual color
+            for(int x = 0; x < fb.width(); x++) {
+                for(int y = 0; y < fb.height(); y++) {
+                    uint8_t intensity = static_cast<uint8_t>(
+                        fb.get_z(x, y) * Color::MAX_COLOR_CHANNEL
+                    );
+                    Color c = {intensity, intensity, intensity, Color::MAX_COLOR_CHANNEL};
+                    fb.set(x, y, c);
+                }
+            }
+            
+            fb.write_tga_file(filename);
+        }
     }    
 }

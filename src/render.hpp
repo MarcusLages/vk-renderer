@@ -32,7 +32,10 @@ namespace vkr {
     struct IRenderTarget {
         virtual ~IRenderTarget() = default;
         virtual IFrameBuffer& framebuffer() = 0;
+        // TODO: later redesign this to pass an enum so you can present
+        //       different things (actual image, normal map, z-value, etc.)
         virtual void present() = 0;
+        virtual void present_depth() = 0;
     };
 
     struct IRenderer {

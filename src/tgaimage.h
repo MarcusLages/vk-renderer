@@ -80,6 +80,9 @@ namespace vkr {
     
             IFrameBuffer& framebuffer() override { return fb; }
             void present() override;
+            
+            //! On TGATarget, rewrites the whole
+            void present_depth() override;
         };
         
     }

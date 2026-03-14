@@ -33,14 +33,6 @@ namespace vkr {
             IFrameBuffer &fb
         );
 
-        // Renders the z-buffer (depth buffer) in grayscale
-        static void draw_triangle_depth(
-            mvmath::vec3 a,
-            mvmath::vec3 b,
-            mvmath::vec3 c,
-            IFrameBuffer &fb
-        );
-
         static void draw_triangle_scanline(
             mvmath::vec2 a,
             mvmath::vec2 b,
@@ -50,7 +42,6 @@ namespace vkr {
         );
 
         void render() override;
-        void render_depth();
         void render_scanline();
     };
 

@@ -30,16 +30,16 @@ int main(int argc, char** argv) {
     vkr::FlatRasterizer tga_flat_render(tga_fb, model);
     vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
 
-    tga_flat_render.render_depth();
-    sdl_flat_render.render_depth();
+    tga_flat_render.render();
+    sdl_flat_render.render();
     // tga_line_render.render();
     // sdl_line_render.render();
     
     // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, tga_fb);
     // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, sdl_fb);
 
-    tga.present();
-    sdl.run();
+    tga.present_depth();
+    sdl.run_depth();
 
     return 0;
 }
