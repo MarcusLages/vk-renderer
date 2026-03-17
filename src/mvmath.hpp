@@ -15,55 +15,53 @@ namespace mvmath {
             };
         };
 
+        
         constexpr vec2() = default;
         constexpr vec2(float x, float y) : x(x), y(y) {}
+        constexpr vec2(float fill) : x(fill), y(fill) {}
+        
+        constexpr vec2 operator+=(vec2 v) {
+            x += v.x;
+            y += v.y;
+            return *this;
+        }
+        
+        constexpr vec2 operator-=(vec2 v) {
+            x -= v.x;
+            y -= v.y;
+            return *this;
+        }
 
         constexpr vec2 operator+(vec2 v) const{
-            return { 
-                x + v.x,
-                y + v.y
-            };
+            vec2 res(*this);
+            return res += v;
         }
 
         constexpr vec2 operator-(vec2 v) const {
-            return { 
-                x - v.x,
-                y - v.y
-            };
+            vec2 res(*this);
+            return res -= v;
         }
 
-        constexpr void operator+=(vec2 v) {
-            x += v.x;
-            y += v.y;
+        constexpr vec2 operator*=(float sc) {
+            x *= sc;
+            y *= sc;
+            return *this;
         }
         
-        constexpr void operator-=(vec2 v) {
-            x -= v.x;
-            y -= v.y;
+        constexpr vec2 operator/=(float sc) {
+            x /= sc;
+            y /= sc;
+            return *this;
         }
-
+        
         constexpr vec2 operator*(float sc) const {
-            return { 
-                x * sc,
-                y * sc
-            };
+            vec2 res(*this);
+            return res *= sc;
         }
 
         constexpr vec2 operator/(float sc) const {
-            return { 
-                x / sc,
-                y / sc
-            };
-        }
-
-        constexpr void operator*=(float sc) {
-            x *= sc;
-            y *= sc;
-        }
-        
-        constexpr void operator/=(float sc) {
-            x /= sc;
-            y /= sc;
+            vec2 res(*this);
+            return res /= sc;
         }
         
         bool operator==(vec2 v) const {
@@ -72,8 +70,7 @@ namespace mvmath {
         }
 
         bool operator!=(vec2 v) const {
-            return std::fabs(x - v.x) >= eps ||
-                   std::fabs(y - v.y) >= eps;
+            return !(*this == v);
         }
 
         constexpr float& operator[](int i) {
@@ -106,6 +103,9 @@ namespace mvmath {
                 return vec2();
             return *this / l;
         }
+
+        constexpr static vec2 one() { return vec2(1.); }
+
     };
     
     struct vec3 {
@@ -120,61 +120,54 @@ namespace mvmath {
 
         constexpr vec3() = default;
         constexpr vec3(float x, float y, float z) : x(x), y(y), z(z) {}
+        constexpr vec3(float fill) : x(fill), y(fill), z(fill) {}
 
-        constexpr vec3 operator+(vec3 v) const{
-            return { 
-                x + v.x,
-                y + v.y,
-                z + v.z
-            };
-        }
-
-        constexpr vec3 operator-(vec3 v) const {
-            return { 
-                x - v.x,
-                y - v.y,
-                z - v.z
-            };
-        }
-
-        constexpr void operator+=(vec3 v) {
+        constexpr vec3 operator+=(vec3 v) {
             x += v.x;
             y += v.y;
             z += v.z;
+            return *this;
         }
         
-        constexpr void operator-=(vec3 v) {
+        constexpr vec3 operator-=(vec3 v) {
             x -= v.x;
             y -= v.y;
             z -= v.z;
+            return *this;
         }
 
-        constexpr vec3 operator*(float sc) const {
-            return { 
-                x * sc,
-                y * sc,
-                z * sc
-            };
+        constexpr vec3 operator+(vec3 v) const{
+            vec3 res(*this);
+            return res += v;
         }
 
-        constexpr vec3 operator/(float sc) const {
-            return { 
-                x / sc,
-                y / sc,
-                z / sc
-            };
+        constexpr vec3 operator-(vec3 v) const {
+            vec3 res(*this);
+            return res -= v;
         }
 
-        constexpr void operator*=(float sc) {
+        constexpr vec3 operator*=(float sc) {
             x *= sc;
             y *= sc;
             z *= sc;
+            return *this;
         }
         
-        constexpr void operator/=(float sc) {
+        constexpr vec3 operator/=(float sc) {
             x /= sc;
             y /= sc;
             z /= sc;
+            return *this;
+        }
+        
+        constexpr vec3 operator*(float sc) const {
+            vec3 res(*this);
+            return res *= sc;
+        }
+
+        constexpr vec3 operator/(float sc) const {
+            vec3 res(*this);
+            return res /= sc;
         }
         
         bool operator==(vec3 v) const {
@@ -184,9 +177,7 @@ namespace mvmath {
         }
 
         bool operator!=(vec3 v) const {
-            return std::fabs(x - v.x) >= eps ||
-                   std::fabs(y - v.y) >= eps ||
-                   std::fabs(z - v.z) >= eps;
+            return !(*this == v);
         }
 
         constexpr float& operator[](int i) {
@@ -203,9 +194,9 @@ namespace mvmath {
     
         constexpr vec3 cross(vec3 v) const {
             return {
-                z * v.y - y * v.z,
-                x * v.z - z * v.x,
-                y * v.x - x * v.y 
+                y * v.z - z * v.y,
+                z * v.x - x * v.z,
+                x * v.y - y * v.x 
             };
         }
 
@@ -227,10 +218,20 @@ namespace mvmath {
                 return vec3();
             return *this / l;
         }
+
+        // Slices z coord
+        vec2 to_vec2() const {
+            return {x, y};
+        }
+        
+        constexpr static vec3 one() { return vec3(1.); }
     };
 
-    inline constexpr vec2 Vec2Zero = {0.0f, 0.0f};
-    inline constexpr vec3 Vec3Zero = {0.0f, 0.0f, 0.0f};
+    inline constexpr vec2 vec2_ZERO = vec2();
+    inline constexpr vec2 vec2_ONE  = vec2::one();
+
+    inline constexpr vec3 vec3_ZERO = vec3();
+    inline constexpr vec3 vec3_ONE  = vec3::one();
     
     // This version uses cross product so it performs more calculations and
     // executes more code, but it is a cool naive formula
