@@ -442,7 +442,44 @@ namespace mvmath {
             return res /= sc;
         }
 
-        // TODO: still missing vec/mat mult, self mat mul, det
+        constexpr mat3 operator*=(mat3 m) {
+            float _ix = ix * m.ix + jx * m.iy + kx * m.iz;
+            float _iy = iy * m.ix + jy * m.iy + ky * m.iz;
+            float _iz = iz * m.ix + jz * m.iy + kz * m.iz;
+                
+            float _jx = ix * m.jx + jx * m.jy + kx * m.jz;
+            float _jy = iy * m.jx + jy * m.jy + ky * m.jz;
+            float _jz = iz * m.jx + jz * m.jy + kz * m.jz;
+                
+            float _kx = ix * m.kx + jx * m.ky + kx * m.kz;
+            float _ky = iy * m.kx + jy * m.ky + ky * m.kz;
+            float _kz = iz * m.kx + jz * m.ky + kz * m.kz;
+
+            ix = _ix; jx = _jx; kx = _kx;
+            iy = _iy; jy = _jy; ky = _ky;
+            iz = _iz; jz = _jz; kz = _kz;
+
+            return *this;
+        }
+        
+        constexpr const vec3 operator*(const vec3 v) const {
+            return {
+                ix * v.x + jx * v.y + kx * v.z,
+                iy * v.x + jy * v.y + ky * v.z,
+                iz * v.x + jz * v.y + kz * v.z
+            };
+        }
+
+        constexpr const mat3 operator*(mat3 m) const {
+            mat3 res(*this);
+            return res *= m;
+        }
+
+        constexpr const float det() const {
+            return ix * (jy * kz - ky * jz)
+                 - jx * (kz * iy - iz * ky)
+                 + kx * (iy * jz - jy * iz);
+        }
         
         constexpr float* operator[](const int i) {
             return coord[i];
@@ -458,6 +495,14 @@ namespace mvmath {
 
         constexpr const float& operator()(const int i, const int j) const {
             return coord[i][j];
+        }
+
+        constexpr const vec3 get_row_vec(const int row) {
+            return {coord[row][0], coord[row][1], coord[row][2]};
+        }
+        
+        constexpr const vec3 get_col_vec(const int col) {
+            return {coord[0][col], coord[1][col], coord[2][col]};
         }
 
         constexpr static mat3 one() { return mat3(1.); }
@@ -565,8 +610,59 @@ namespace mvmath {
             return res /= sc;
         }
 
-        // TODO: still missing vec/mat mult, self mat mul, det
-        
+        constexpr mat4 operator*=(mat4 m) {
+            float _ix = ix * m.ix + jx * m.iy + kx * m.iz + lx * m.iw;
+            float _iy = iy * m.ix + jy * m.iy + ky * m.iz + ly * m.iw;
+            float _iz = iz * m.ix + jz * m.iy + kz * m.iz + lz * m.iw;
+            float _iw = iw * m.ix + jw * m.iy + kw * m.iz + lw * m.iw;
+            
+            float _jx = ix * m.jx + jx * m.jy + kx * m.jz + lx * m.jw;
+            float _jy = iy * m.jx + jy * m.jy + ky * m.jz + ly * m.jw;
+            float _jz = iz * m.jx + jz * m.jy + kz * m.jz + lz * m.jw;
+            float _jw = iw * m.jx + jw * m.jy + kw * m.jz + lw * m.jw;
+            
+            float _kx = ix * m.kx + jx * m.ky + kx * m.kz + lx * m.kw;
+            float _ky = iy * m.kx + jy * m.ky + ky * m.kz + ly * m.kw;
+            float _kz = iz * m.kx + jz * m.ky + kz * m.kz + lz * m.kw;
+            float _kw = iw * m.kx + jw * m.ky + kw * m.kz + lw * m.kw;
+            
+            float _lx = ix * m.lx + jx * m.ly + kx * m.lz + lx * m.lw;
+            float _ly = iy * m.lx + jy * m.ly + ky * m.lz + ly * m.lw;
+            float _lz = iz * m.lx + jz * m.ly + kz * m.lz + lz * m.lw;
+            float _lw = iw * m.lx + jw * m.ly + kw * m.lz + lw * m.lw;
+            
+            ix = _ix; iy = _iy; iz = _iz; iw = _iw;
+            jx = _jx; jy = _jy; jz = _jz; jw = _jw;
+            kx = _kx; ky = _ky; kz = _kz; kw = _kw;
+            lx = _lx; ly = _ly; lz = _lz; lw = _lw;
+            
+            return *this;
+        }
+
+        constexpr const vec4 operator*(const vec4 v) const {
+            return {
+                ix * v.x + jx * v.y + kx * v.z + lx * v.w,
+                iy * v.x + jy * v.y + ky * v.z + ly * v.w,
+                iz * v.x + jz * v.y + kz * v.z + lz * v.w,
+                iw * v.x + jw * v.y + kw * v.z + lw * v.w
+            };
+        }
+
+        constexpr const mat4 operator*(mat4 m) const {
+            mat4 res(*this);
+            return res *= m;
+        }
+
+        constexpr const float det() const {
+            // Calculate cofactors first
+            float c00 = jy*(kz*lw - lz*kw) - ky*(jz*lw - lz*jw) + ly*(jz*kw - kz*jw);
+            float c01 = iy*(kz*lw - lz*kw) - ky*(iz*lw - lz*iw) + ly*(iz*kw - kz*iw);
+            float c02 = iy*(jz*lw - lz*jw) - jy*(iz*lw - lz*iw) + ly*(iz*jw - jz*iw);
+            float c03 = iy*(jz*kw - kz*jw) - jy*(iz*kw - kz*iw) + ky*(iz*jw - jz*iw);
+
+            return ix*c00 - jx*c01 + kx*c02 - lx*c03;
+        }
+
         constexpr float* operator[](const int i) {
             return coord[i];
         }
@@ -581,6 +677,14 @@ namespace mvmath {
 
         constexpr const float& operator()(const int i, const int j) const {
             return coord[i][j];
+        }
+
+        constexpr const vec4 get_row_vec(const int row) {
+            return {coord[row][0], coord[row][1], coord[row][2], coord[row][3]};
+        }
+        
+        constexpr const vec4 get_col_vec(const int col) {
+            return {coord[0][col], coord[1][col], coord[2][col], coord[3][col]};
         }
 
         constexpr static mat4 one() { return mat4(1.); }
