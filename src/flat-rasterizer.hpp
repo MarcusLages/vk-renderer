@@ -5,14 +5,14 @@ namespace vkr {
 
     struct FlatRasterizer : public IRenderer {
         bool is_color_rand = true;
-        Color triang_col = {};
+        Color tri_col{};
         
         FlatRasterizer(
             IFrameBuffer& fb,
             Model& model,
             bool is_color_rand = true,
-            Color triang_col = {}
-        ) : IRenderer(fb, model), is_color_rand(is_color_rand), triang_col(triang_col) {}
+            Color tri_col = {}
+        ) : IRenderer(fb, model), is_color_rand(is_color_rand), tri_col(tri_col) {}
 
         static void draw_point(mvmath::vec2 v, Color col, IFrameBuffer& fb);
 

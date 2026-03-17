@@ -133,7 +133,7 @@ namespace vkr {
 
             draw_triangle_zbuf(
                 a, b, c,
-                (is_color_rand) ? get_rand_col() : triang_col, 
+                (is_color_rand) ? get_rand_col() : tri_col, 
                 fb
             );
         }
@@ -148,7 +148,7 @@ namespace vkr {
 
             draw_triangle_scanline(
                 a, b, c,
-                (is_color_rand) ? get_rand_col() : triang_col, 
+                (is_color_rand) ? get_rand_col() : tri_col, 
                 fb
             );
         }

@@ -10,6 +10,7 @@ set(SOURCES
     src/model.cpp
     src/line-renderer.cpp
     src/flat-rasterizer.cpp
+    src/camera-rasterizer.cpp
     src/main.cpp
 )
 
