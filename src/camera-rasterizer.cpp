@@ -1,5 +1,4 @@
 #include "camera-rasterizer.hpp"
-#include "mvmath.hpp"
 #include "render-utils.hpp"
 
 namespace vkr {
@@ -11,6 +10,7 @@ namespace vkr {
         mvmath::vec3 c,
         Color col
     ) {
+        // TODO
         mvmath::vec2 a_v2 = {a.x, a.y};
         mvmath::vec2 b_v2 = {b.x, b.y};
         mvmath::vec2 c_v2 = {c.x, c.y};
@@ -42,6 +42,7 @@ namespace vkr {
     }
 
     void CameraRasterizer::render() {
+        // TODO
         std::tuple<int, int> frame = {
             fb.width() * FRAME_PERCENTAGE, fb.height() * FRAME_PERCENTAGE
         };
