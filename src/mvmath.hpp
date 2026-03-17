@@ -227,11 +227,390 @@ namespace mvmath {
         constexpr static vec3 one() { return vec3(1.); }
     };
 
+    struct vec4 {
+        union {
+            float coord[4] = {0, 0, 0, 0};
+            struct {
+                float x;
+                float y;
+                float z;
+                float w;
+            };
+        };
+
+        constexpr vec4() = default;
+        constexpr vec4(float x, float y, float z, float w) 
+            : x(x), y(y), z(z), w(w) {}
+        constexpr vec4(float fill) : x(fill), y(fill), z(fill), w(fill) {}
+
+        constexpr vec4 operator+=(vec4 v) {
+            x += v.x;
+            y += v.y;
+            z += v.z;
+            w += v.w;
+            return *this;
+        }
+        
+        constexpr vec4 operator-=(vec4 v) {
+            x -= v.x;
+            y -= v.y;
+            z -= v.z;
+            w -= v.w;
+            return *this;
+        }
+
+        constexpr vec4 operator+(vec4 v) const{
+            vec4 res(*this);
+            return res += v;
+        }
+
+        constexpr vec4 operator-(vec4 v) const {
+            vec4 res(*this);
+            return res -= v;
+        }
+
+        constexpr vec4 operator*=(float sc) {
+            x *= sc;
+            y *= sc;
+            z *= sc;
+            w *= sc;
+            return *this;
+        }
+        
+        constexpr vec4 operator/=(float sc) {
+            x /= sc;
+            y /= sc;
+            z /= sc;
+            w /= sc;
+            return *this;
+        }
+        
+        constexpr vec4 operator*(float sc) const {
+            vec4 res(*this);
+            return res *= sc;
+        }
+
+        constexpr vec4 operator/(float sc) const {
+            vec4 res(*this);
+            return res /= sc;
+        }
+        
+        bool operator==(vec4 v) const {
+            return std::fabs(x - v.x) < eps &&
+                   std::fabs(y - v.y) < eps &&
+                   std::fabs(z - v.z) < eps &&
+                   std::fabs(w - v.w) < eps;
+        }
+
+        bool operator!=(vec4 v) const {
+            return !(*this == v);
+        }
+
+        constexpr float& operator[](int i) {
+            return coord[i];
+        }
+
+        constexpr const float& operator[](int i) const {
+            return coord[i];
+        }
+
+        constexpr float dot(vec4 v) const {
+            return x * v.x +
+                   y * v.y +
+                   z * v.z +
+                   w * v.w;
+        }
+
+        constexpr vec4 sc_mult(float sc) const {
+            return *this * sc;
+        }
+
+        constexpr vec4 sc_div(float sc) const {
+            return *this / sc;
+        }
+
+        float len() const {
+            return std::sqrt(x * x + y * y + z * z + w * w);
+        }
+
+        vec4 norm() const {
+            float l = this->len();
+            if(l < eps) 
+                return vec4();
+            return *this / l;
+        }
+
+        // Slices z and w coord
+        vec2 to_vec2() const {
+            return {x, y};
+        }
+
+        // Slices z coord
+        vec3 to_vec3() const {
+            return {x, y, z};
+        }
+
+        constexpr static vec4 one() { return vec4(1.); }
+    };
+    
+    struct mat3 {
+        union {
+            float coord[3][3] = {
+                {0, 0, 0},
+                {0, 0, 0},
+                {0, 0, 0}
+            };
+            float coord_flat[9];
+            struct {
+                float ix, jx, kx;
+                float iy, jy, ky;
+                float iz, jz, kz;
+            };
+        };
+        
+        constexpr mat3() = default;
+        constexpr mat3(
+            float ix, float jx, float kx,
+            float iy, float jy, float ky,
+            float iz, float jz, float kz
+        ) : coord{
+            {ix, jx, kx},
+            {iy, jy, ky},
+            {iz, jz, kz}
+        } {}
+
+        constexpr mat3(vec3 i, vec3 j, vec3 k) 
+        : coord{
+            {i.x, j.x, k.x},
+            {i.y, j.y, k.y},
+            {i.z, j.z, k.z}
+        } {}
+
+        constexpr mat3(float fill) 
+        : coord{
+            {fill, fill, fill},
+            {fill, fill, fill},
+            {fill, fill, fill}
+        } {}
+
+        constexpr mat3 operator+=(mat3 m) {
+            // TODO: take out 9s and 16s
+            for(int i = 0; i < 9; i++) {
+                coord_flat[i] += m.coord_flat[i];
+            }
+            return *this;
+        }
+
+        constexpr mat3 operator-=(mat3 m) {
+            for(int i = 0; i < 9; i++) {
+                coord_flat[i] -= m.coord_flat[i];
+            }
+            return *this;
+        }
+
+        constexpr const mat3 operator+(mat3 m) const {
+            mat3 res(*this);
+            return res += m;
+        }
+
+        constexpr const mat3 operator-(mat3 m) const {
+            mat3 res(*this);
+            return res -= m;
+        }
+
+        constexpr mat3 operator*=(float sc) {
+            for(int i = 0; i < 9; i++) {
+                coord_flat[i] *= sc;
+            }
+            return *this;
+        }
+
+        constexpr mat3 operator/=(float sc) {
+            for(int i = 0; i < 9; i++) {
+                coord_flat[i] /= sc;
+            }
+            return *this;
+        }
+
+        constexpr const mat3 operator*(float sc) const {
+            mat3 res(*this);
+            return res *= sc;
+        }
+
+        constexpr const mat3 operator/(float sc) const {
+            mat3 res(*this);
+            return res /= sc;
+        }
+
+        // TODO: still missing vec/mat mult, self mat mul, det
+        
+        constexpr float* operator[](const int i) {
+            return coord[i];
+        }
+
+        constexpr const float* operator[](const int i) const {
+            return coord[i];
+        }
+
+        constexpr float& operator()(const int i, const int j) {
+            return coord[i][j];
+        }
+
+        constexpr const float& operator()(const int i, const int j) const {
+            return coord[i][j];
+        }
+
+        constexpr static mat3 one() { return mat3(1.); }
+
+        constexpr static mat3 id() {
+            return {
+                {1., 0., 0.},
+                {0., 1., 0.},
+                {0., 0., 1.}
+            };
+        }
+    };
+
+    struct mat4 {
+        union {
+            float coord[4][4] = {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0}
+            };
+            float coord_flat[16];
+            struct {
+                float ix, jx, kx, lx;
+                float iy, jy, ky, ly;
+                float iz, jz, kz, lz;
+                float iw, jw, kw, lw;
+            };
+        };
+
+        constexpr mat4() = default;
+        constexpr mat4(
+            float ix, float jx, float kx, float lx,
+            float iy, float jy, float ky, float ly,
+            float iz, float jz, float kz, float lz,
+            float iw, float jw, float kw, float lw
+        ): coord{
+            {ix, jx, kx, lx},
+            {iy, jy, ky, ly},
+            {iz, jz, kz, lz},
+            {iw, jw, kw, lw}
+        } {}
+
+        constexpr mat4(vec4 i, vec4 j, vec4 k,  vec4 l) 
+        : coord{
+            {i.x, j.x, k.x, l.x},
+            {i.y, j.y, k.y, l.y},
+            {i.z, j.z, k.z, l.z},
+            {i.w, j.w, k.w, l.w}
+        } {}
+
+        constexpr mat4(float fill) 
+        : coord{
+            {fill, fill, fill, fill},
+            {fill, fill, fill, fill},
+            {fill, fill, fill, fill},
+            {fill, fill, fill, fill}
+        } {}
+
+        constexpr mat4 operator+=(mat4 m) {
+            for(int i = 0; i < 16; i++) {
+                coord_flat[i] += m.coord_flat[i];
+            }
+            return *this;
+        }
+
+        constexpr mat4 operator-=(mat4 m) {
+            for(int i = 0; i < 16; i++) {
+                coord_flat[i] -= m.coord_flat[i];
+            }
+            return *this;
+        }
+
+        constexpr const mat4 operator+(mat4 m) const {
+            mat4 res(*this);
+            return res += m;
+        }
+
+        constexpr const mat4 operator-(mat4 m) const {
+            mat4 res(*this);
+            return res -= m;
+        }
+
+        constexpr mat4 operator*=(float sc) {
+            for(int i = 0; i < 16; i++) {
+                coord_flat[i] *= sc;
+            }
+            return *this;
+        }
+
+        constexpr mat4 operator/=(float sc) {
+            for(int i = 0; i < 16; i++) {
+                coord_flat[i] /= sc;
+            }
+            return *this;
+        }
+
+        constexpr const mat4 operator*(float sc) const {
+            mat4 res(*this);
+            return res *= sc;
+        }
+
+        constexpr const mat4 operator/(float sc) const {
+            mat4 res(*this);
+            return res /= sc;
+        }
+
+        // TODO: still missing vec/mat mult, self mat mul, det
+        
+        constexpr float* operator[](const int i) {
+            return coord[i];
+        }
+
+        constexpr const float* operator[](const int i) const {
+            return coord[i];
+        }
+
+        constexpr float& operator()(const int i, const int j) {
+            return coord[i][j];
+        }
+
+        constexpr const float& operator()(const int i, const int j) const {
+            return coord[i][j];
+        }
+
+        constexpr static mat4 one() { return mat4(1.); }
+
+        constexpr static mat4 id() {
+            return {
+                {1., 0., 0., 0.},
+                {0., 1., 0., 0.},
+                {0., 0., 1., 0.},
+                {0., 0., 0., 1.}
+            };
+        }
+    };
+
     inline constexpr vec2 vec2_ZERO = vec2();
     inline constexpr vec2 vec2_ONE  = vec2::one();
 
     inline constexpr vec3 vec3_ZERO = vec3();
     inline constexpr vec3 vec3_ONE  = vec3::one();
+
+    inline constexpr vec4 vec4_ZERO = vec4();
+    inline constexpr vec4 vec4_ONE  = vec4::one();
+
+    inline constexpr mat3 mat3_ZERO = mat3();
+    inline constexpr mat3 mat3_ONE  = mat3::one();
+    inline constexpr mat3 mat3_ID   = mat3::id();
+
+    inline constexpr mat4 mat4_ZERO = mat4();
+    inline constexpr mat4 mat4_ONE  = mat4::one();
+    inline constexpr mat4 mat4_ID   = mat4::id();
     
     // This version uses cross product so it performs more calculations and
     // executes more code, but it is a cool naive formula
