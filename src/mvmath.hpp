@@ -770,4 +770,38 @@ namespace mvmath {
         };
     }
 
+    // TODO: think on how to safely clip the object when v.z == camera.z
+    constexpr mvmath::vec3 persp_project_tr(
+        vec3 v,
+        vec3 camera
+    ) {
+        return v / (1 - v.z / camera.z);
+    }
+
+    inline mvmath::vec3 persp_project(
+        vec3 v,
+        vec3 camera,
+        vec3 proj_plane // Indicates the origin of the projection plane
+    ) {
+        return {
+            ((v.x - camera.x) / (v.z - camera.z)) * (proj_plane.z - camera.z) + camera.x,
+            ((v.y - camera.y) / (v.z - camera.z)) * (proj_plane.z - camera.z) + camera.y,
+            v.z
+        };
+    }
+
+    inline mvmath::vec3 persp_project(
+        vec3 v,
+        vec3 camera,
+        float fov_rad, // Angle of field of view of the camera
+        float max_proj_val
+    ) {
+        float proj_z = (max_proj_val - camera.x) / tan(M_PI - fov_rad / 2) + camera.z;
+        return {
+            ((v.x - camera.x) / (v.z - camera.z)) * (proj_z - camera.z) + camera.x,
+            ((v.y - camera.y) / (v.z - camera.z)) * (proj_z - camera.z) + camera.y,
+            v.z
+        };
+    }
+
 };

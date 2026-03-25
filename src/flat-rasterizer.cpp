@@ -37,6 +37,9 @@ namespace vkr {
                 float gamma = mvmath::signed_tri_area(a, b, p) / total_area;
 
                 if(alpha < 0 || beta < 0 || gamma < 0) continue;
+                // TODO: make it so it skips the whole row/column if not
+                if(!fb.is_in_bounds(x, y)) continue;
+                
                 fb.set(x, y, col);
             }
         }
@@ -106,6 +109,8 @@ namespace vkr {
                 auto [min, max] = std::minmax<int>(ab_x, ac_x);
                 
                 for(int x = min; x <= max; x++) {
+                    // TODO: make it so it skips the whole row/column if not
+                    if(!fb.is_in_bounds(x, y)) continue;
                     fb.set(x, y, col);
                 }
             }
@@ -119,6 +124,8 @@ namespace vkr {
                 auto [min, max] = std::minmax<int>(bc_x, ac_x);
                 
                 for(int x = min; x <= max; x++) {
+                    // TODO: make it so it skips the whole row/column if not
+                    if(!fb.is_in_bounds(x, y)) continue;
                     fb.set(x, y, col);
                 }
             }

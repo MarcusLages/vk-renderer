@@ -32,6 +32,8 @@ namespace vkr {
                 float gamma = mvmath::signed_tri_area(a_v2, b_v2, p) / total_area;
                 
                 if(alpha < 0 || beta < 0 || gamma < 0) continue;
+                // TODO: make it so it skips the whole row/column if not
+                if(!fb.is_in_bounds(x, y)) continue;
                 
                 float z = a.z * alpha + b.z * beta + c.z * gamma;
                 if(z > fb.get_z(x, y)) continue;
@@ -47,9 +49,9 @@ namespace vkr {
             fb.width() * FRAME_PERCENTAGE, fb.height() * FRAME_PERCENTAGE
         };
         for(int i = 0; i < model.faces_len(); i++) {
-            mvmath::vec3 a = mvmath::central_ortho_project_z(mvmath::persp_project_tr(model.vert(i, 0), {0, 0, 1}), model.vert_range, frame);
-            mvmath::vec3 b = mvmath::central_ortho_project_z(mvmath::persp_project_tr(model.vert(i, 1), {0, 0, 1}), model.vert_range, frame);
-            mvmath::vec3 c = mvmath::central_ortho_project_z(mvmath::persp_project_tr(model.vert(i, 2), {0, 0, 1}), model.vert_range, frame);
+            mvmath::vec3 a = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 0), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
+            mvmath::vec3 b = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 1), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
+            mvmath::vec3 c = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 2), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
 
             draw_triangle(
                 a, b, c,
