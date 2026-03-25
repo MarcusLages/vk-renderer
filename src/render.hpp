@@ -27,6 +27,9 @@ namespace vkr {
     
         constexpr int width() const { return w; }
         constexpr int height() const { return h; }
+        constexpr bool is_in_bounds(const int x, const int y) {
+            return x >= 0 && x < w && y >= 0 && y < h;
+        }
     };
     
     struct IRenderTarget {

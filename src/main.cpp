@@ -25,8 +25,8 @@ int main(int argc, char** argv) {
     auto& sdl_fb = sdl.framebuffer();
 
     vkr::Model model(argv[1]);
-    vkr::LineRenderer tga_line_render(tga_fb, model, vkr::COL_BLUE);
-    vkr::LineRenderer sdl_line_render(sdl_fb, model, vkr::COL_BLUE);
+    vkr::LineRenderer tga_line_render(tga_fb, model, vkr::COL_RED);
+    vkr::LineRenderer sdl_line_render(sdl_fb, model, vkr::COL_RED);
     vkr::FlatRasterizer tga_flat_render(tga_fb, model);
     vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
 
@@ -38,8 +38,8 @@ int main(int argc, char** argv) {
     // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, tga_fb);
     // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, sdl_fb);
 
-    tga.present_depth();
-    sdl.run_depth();
+    tga.present();
+    sdl.run();
 
     return 0;
 }

@@ -71,7 +71,9 @@ namespace vkr {
                 float gamma = mvmath::signed_tri_area(a_v2, b_v2, p) / total_area;
                 
                 if(alpha < 0 || beta < 0 || gamma < 0) continue;
-                
+                // TODO: make it so it skips the whole row/column if not
+                if(!fb.is_in_bounds(x, y)) continue;
+
                 float z = a.z * alpha + b.z * beta + c.z * gamma;
                 if(z > fb.get_z(x, y)) continue;
 

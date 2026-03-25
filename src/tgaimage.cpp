@@ -193,8 +193,6 @@ namespace vkr {
         }
     
         Color TGAImage::get(const int x, const int y) const {
-            if (!data.size() || x < 0 || y < 0 || x >= w || y >= h)
-                return {};
             TGAColor ret = {0, 0, 0, 0, bpp};
             const std::uint8_t *p = data.data() + (x + y * w) * bpp;
             for (int i = bpp; i--; ret.bgra[i] = p[i]);
@@ -202,27 +200,21 @@ namespace vkr {
         }
 
         float TGAImage::get_z(const int x, const int y) const {
-            if(x < 0 || y < 0 || x >= w || y >= h) return std::numeric_limits<float>::max();
             return depth[y * w + x];
         }
     
         void TGAImage::set(int x, int y, const Color &c) {
-            if (!data.size() || x < 0 || y < 0 || x >= w || y >= h) return;
             TGAColor tc = TGAColor(c);
             memcpy(data.data() + (x + y * w) * bpp, tc.bgra, bpp);
         }
 
         void TGAImage::set(int x, int y, float z, const Color &c) {
-            if (!data.size() || !depth.size() || x < 0 || y < 0 || x >= w || y >= h)
-                return;
             TGAColor tc = TGAColor(c);
             memcpy(data.data() + (x + y * w) * bpp, tc.bgra, bpp);
             depth[y * w + x] = z;
         }
 
         void TGAImage::set(int x, int y, const TGAColor &c) {
-            if (!data.size() || x < 0 || y < 0 || x >= w || y >= h)
-                return;
             memcpy(data.data() + (x + y * w) * bpp, c.bgra, bpp);
         }
     
