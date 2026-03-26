@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-#include <stdexcept>
+#include <tuple>
 
 namespace mvmath {
 
@@ -121,6 +121,7 @@ namespace mvmath {
         constexpr vec3() = default;
         constexpr vec3(float x, float y, float z) : x(x), y(y), z(z) {}
         constexpr vec3(float fill) : x(fill), y(fill), z(fill) {}
+        constexpr vec3(vec2 v2, float z = 0) : x(v2.x), y(v2.y), z(z) {}
 
         constexpr vec3 operator+=(vec3 v) {
             x += v.x;
@@ -242,6 +243,10 @@ namespace mvmath {
         constexpr vec4(float x, float y, float z, float w) 
             : x(x), y(y), z(z), w(w) {}
         constexpr vec4(float fill) : x(fill), y(fill), z(fill), w(fill) {}
+        constexpr vec4(vec3 v3, float w = 0) 
+            : x(v3.x), y(v3.y), z(v3.z), w(w) {}
+        constexpr vec4(vec2 v2, float z = 0, float w = 0) 
+            : x(v2.x), y(v2.y), z(z), w(w) {}
 
         constexpr vec4 operator+=(vec4 v) {
             x += v.x;
@@ -366,6 +371,18 @@ namespace mvmath {
                 float iy, jy, ky;
                 float iz, jz, kz;
             };
+        };
+
+        enum Col {
+            X_COL = 0,
+            Y_COL = 1,
+            Z_COL = 2
+        };
+
+        enum Row {
+            X_ROW = 0,
+            Y_ROW = 1,
+            Z_ROW = 2
         };
         
         constexpr mat3() = default;
@@ -497,11 +514,11 @@ namespace mvmath {
             return coord[i][j];
         }
 
-        constexpr const vec3 get_row_vec(const int row) {
+        constexpr const vec3 row(const Row row) {
             return {coord[row][0], coord[row][1], coord[row][2]};
         }
         
-        constexpr const vec3 get_col_vec(const int col) {
+        constexpr const vec3 col(const Col col) {
             return {coord[0][col], coord[1][col], coord[2][col]};
         }
 
@@ -531,6 +548,20 @@ namespace mvmath {
                 float iz, jz, kz, lz;
                 float iw, jw, kw, lw;
             };
+        };
+
+        enum Col {
+            X_COL = 0,
+            Y_COL = 1,
+            Z_COL = 2,
+            W_COL = 3
+        };
+
+        enum Row {
+            X_ROW = 0,
+            Y_ROW = 1,
+            Z_ROW = 2,
+            W_ROW = 3
         };
 
         constexpr mat4() = default;
@@ -663,10 +694,12 @@ namespace mvmath {
             return ix*c00 - jx*c01 + kx*c02 - lx*c03;
         }
 
+        // ! Returns row
         constexpr float* operator[](const int i) {
             return coord[i];
         }
 
+        // ! Returns row
         constexpr const float* operator[](const int i) const {
             return coord[i];
         }
@@ -679,11 +712,11 @@ namespace mvmath {
             return coord[i][j];
         }
 
-        constexpr const vec4 get_row_vec(const int row) {
+        constexpr const vec4 row(const Row row) {
             return {coord[row][0], coord[row][1], coord[row][2], coord[row][3]};
         }
         
-        constexpr const vec4 get_col_vec(const int col) {
+        constexpr const vec4 col(const Col col) {
             return {coord[0][col], coord[1][col], coord[2][col], coord[3][col]};
         }
 
@@ -715,6 +748,16 @@ namespace mvmath {
     inline constexpr mat4 mat4_ZERO = mat4();
     inline constexpr mat4 mat4_ONE  = mat4::one();
     inline constexpr mat4 mat4_ID   = mat4::id();
+
+    // * Utils Functions
+
+    constexpr float deg_to_rad(float deg) {
+        return (deg * M_PI) / 180;
+    }
+
+    constexpr float rad_to_deg(float rad) {
+        return (rad * 180) / M_PI;
+    }
     
     // This version uses cross product so it performs more calculations and
     // executes more code, but it is a cool naive formula
