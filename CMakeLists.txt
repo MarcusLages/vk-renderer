@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(SOURCES
     src/tgaimage.cpp
     src/sdl-render.cpp
+    src/transform.cpp
     src/model.cpp
     src/line-renderer.cpp
     src/flat-rasterizer.cpp
