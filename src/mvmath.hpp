@@ -491,12 +491,6 @@ namespace mvmath {
             mat3 res(*this);
             return res *= m;
         }
-
-        constexpr const float det() const {
-            return ix * (jy * kz - ky * jz)
-                 - jx * (kz * iy - iz * ky)
-                 + kx * (iy * jz - jy * iz);
-        }
         
         constexpr float* operator[](const int i) {
             return coord[i];
@@ -531,6 +525,13 @@ namespace mvmath {
                 {0., 0., 1.}
             };
         }
+
+        constexpr const float det() const {
+            return ix * (jy * kz - ky * jz)
+                 - jx * (kz * iy - iz * ky)
+                 + kx * (iy * jz - jy * iz);
+        }
+
     };
 
     struct mat4 {
@@ -684,16 +685,6 @@ namespace mvmath {
             return res *= m;
         }
 
-        constexpr const float det() const {
-            // Calculate cofactors first
-            float c00 = jy*(kz*lw - lz*kw) - ky*(jz*lw - lz*jw) + ly*(jz*kw - kz*jw);
-            float c01 = iy*(kz*lw - lz*kw) - ky*(iz*lw - lz*iw) + ly*(iz*kw - kz*iw);
-            float c02 = iy*(jz*lw - lz*jw) - jy*(iz*lw - lz*iw) + ly*(iz*jw - jz*iw);
-            float c03 = iy*(jz*kw - kz*jw) - jy*(iz*kw - kz*iw) + ky*(iz*jw - jz*iw);
-
-            return ix*c00 - jx*c01 + kx*c02 - lx*c03;
-        }
-
         // ! Returns row
         constexpr float* operator[](const int i) {
             return coord[i];
@@ -730,6 +721,80 @@ namespace mvmath {
                 {0., 0., 0., 1.}
             };
         }
+
+        constexpr const float det() const {
+            // Calculate cofactors first
+            float c00 = jy*(kz*lw - lz*kw) - ky*(jz*lw - lz*jw) + ly*(jz*kw - kz*jw);
+            float c01 = iy*(kz*lw - lz*kw) - ky*(iz*lw - lz*iw) + ly*(iz*kw - kz*iw);
+            float c02 = iy*(jz*lw - lz*jw) - jy*(iz*lw - lz*iw) + ly*(iz*jw - jz*iw);
+            float c03 = iy*(jz*kw - kz*jw) - jy*(iz*kw - kz*iw) + ky*(iz*jw - jz*iw);
+
+            return ix*c00 - jx*c01 + kx*c02 - lx*c03;
+        }
+
+        constexpr static mat4 scaling(vec3 v) {
+            float x = v.x;
+            float y = v.y;
+            float z = v.z;
+            return {
+                x, 0, 0, 0,
+                0, y, 0, 0,
+                0, 0, z, 0,
+                0, 0, 0, 1
+            };
+        }
+        
+        constexpr static mat4 translate(vec3 v) {
+            return {
+                1, 0, 0, v.x,
+                0, 1, 0, v.y,
+                0, 0, 1, v.z,
+                0, 0, 0, 1
+            };
+        }
+
+        constexpr static mat4 rotate_x(float rad) {
+            float c = cos(rad);
+            float s = sin(rad);
+            return {
+                1, 0, 0, 0,
+                0, c, s, 0,
+                0,-s, c, 0,
+                0, 0, 0, 1
+            };
+        }
+
+        constexpr static mat4 rotate_y(float rad) {
+            float c = cos(rad);
+            float s = sin(rad);
+            return {
+                c, 0,-s, 0,
+                0, 1, 0, 0,
+                s, 0, c, 0,
+                0, 0, 0, 1
+            };
+        }
+
+        constexpr static mat4 rotate_z(float rad) {
+            float c = cos(rad);
+            float s = sin(rad);
+            return {
+                c, s, 0, 0,
+               -s, c, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            };
+        }
+
+        // ! Rotation is done on the XYZ pivot order
+        constexpr static mat4 rotate(vec3 euler_rad) {
+            return rotate_x(euler_rad.x) * 
+                   rotate_y(euler_rad.y) * 
+                   rotate_z(euler_rad.z);
+        }
+
+        // TODO: Implement look_at
+
     };
 
     inline constexpr vec2 vec2_ZERO = vec2();
