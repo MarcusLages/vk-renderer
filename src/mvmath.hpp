@@ -793,14 +793,40 @@ namespace mvmath {
                    rotate_z(euler_rad.z);
         }
 
+        // ! Needless to say, but prev_rot should be orthonormal as a rotation matrix
         inline static mat4 look_at(
-            vec3 up, 
+            vec3 up,                   // Normalized direction vector
             vec3 from, 
-            vec3 to
+            vec3 to,
+            mat4 prev_rot = mat4::id() // Only used for the case of looking directly upwards/downwards
         ) {
             vec3 k = (to - from).norm();
+            
+            // Handles the case when k == up (which can cause zero-division on 
+            // the cross product)
+            float k_dot_up = k.dot(up);
+            if(std::fabs(k_dot_up) > (1 - eps)) {
+                
+                // Redoing rotation matrix just because it's faster to get/use 
+                // cos/sin directly instead of calculating the acos or acos and
+                // passing the angle to mvmath::mat4::rotate_x(theta)
+                vec3 k_prev = prev_rot.row(Z_ROW).to_vec3();
+
+                float c = k_prev.dot(k);
+                float s = k_prev.cross(k).len();
+                if(k_dot_up < 0) s = -s; // Recover the sign lost from len() if k == -up
+
+                mat4 from_prev_rot = 
+                    { 1, 0, 0, 0,
+                      0, c, s, 0,
+                      0,-s, c, 0,
+                      0, 0, 0, 1 };
+
+                return from_prev_rot * prev_rot;
+            }
+            
             vec3 i = up.cross(k).norm();
-            vec3 j = j.cross(i).norm();
+            vec3 j = k.cross(i).norm();
             vec4 l = {0, 0, 0, 1};
             return mat4(vec4(i), vec4(j), vec4(k), l);
         }
@@ -888,7 +914,7 @@ namespace mvmath {
         };
     }
 
-    // TODO: think on how to safely clip the object when v.z == camera.z
+    // ! Mus safely clip the object when v.z == camera.z
     constexpr mvmath::vec3 persp_project_tr(
         vec3 v,
         vec3 camera
