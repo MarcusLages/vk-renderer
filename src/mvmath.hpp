@@ -793,7 +793,17 @@ namespace mvmath {
                    rotate_z(euler_rad.z);
         }
 
-        // TODO: Implement look_at
+        inline static mat4 look_at(
+            vec3 up, 
+            vec3 from, 
+            vec3 to
+        ) {
+            vec3 k = (to - from).norm();
+            vec3 i = up.cross(k).norm();
+            vec3 j = j.cross(i).norm();
+            vec4 l = {0, 0, 0, 1};
+            return mat4(vec4(i), vec4(j), vec4(k), l);
+        }
 
     };
 
