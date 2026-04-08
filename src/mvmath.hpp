@@ -532,6 +532,14 @@ namespace mvmath {
                  + kx * (iy * jz - jy * iz);
         }
 
+        constexpr const mat3 transpose() const {
+            return {
+                ix, iy, iz,
+                jx, jy, jz,
+                kx, ky, kz
+            };
+        }
+
     };
 
     struct mat4 {
@@ -732,6 +740,15 @@ namespace mvmath {
             return ix*c00 - jx*c01 + kx*c02 - lx*c03;
         }
 
+        constexpr const mat4 transpose() const {
+            return {
+                ix, iy, iz, iw,
+                jx, jy, jz, jw,
+                kx, ky, kz, kw,
+                lx, ly, lz, lw
+            };
+        }
+
         constexpr static mat4 scaling(vec3 v) {
             float x = v.x;
             float y = v.y;
@@ -812,6 +829,7 @@ namespace mvmath {
                 // passing the angle to mvmath::mat4::rotate_x(theta)
                 vec3 k_prev = prev_rot.row(Z_ROW).to_vec3();
 
+                // Signed sine and cosine
                 float c = k_prev.dot(k);
                 float s = k_prev.cross(k).len();
                 if(k_dot_up < 0) s = -s; // Recover the sign lost from len() if k == -up
