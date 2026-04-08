@@ -1,3 +1,4 @@
+#pragma once
 #include "mvmath.hpp"
 
 namespace vkr {
@@ -129,7 +130,7 @@ namespace vkr {
             return world.col(mvmath::mat4::Z_COL).to_vec3(); // Returns z-axis
         }
 
-        constexpr bool changed() const { return changed; }
+        constexpr bool changed() const { return has_changed; }
         
         constexpr mvmath::vec3 scale_vec() const { return scaling; }
         
