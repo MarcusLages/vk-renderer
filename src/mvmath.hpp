@@ -355,6 +355,12 @@ namespace mvmath {
             return {x, y, z};
         }
 
+        // Homogeneous coordinate divide 
+        // ! OBS: does not check for zero division
+        vec3 homogeneous_div() const {
+            return (*this / w).to_vec3();
+        }
+
         constexpr static vec4 one() { return vec4(1.); }
     };
     
@@ -821,6 +827,7 @@ namespace mvmath {
             
             // Handles the case when k == up (which can cause zero-division on 
             // the cross product)
+            // TODO: would be better to do all that with quaternion
             float k_dot_up = k.dot(up);
             if(std::fabs(k_dot_up) > (1 - eps)) {
                 
