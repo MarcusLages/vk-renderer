@@ -812,9 +812,9 @@ namespace mvmath {
 
         // ! Needless to say, but prev_rot should be orthonormal as a rotation matrix
         inline static mat4 look_at(
-            vec3 up,                   // Normalized direction vector
             vec3 from, 
             vec3 to,
+            vec3 up,                   // Normalized direction vector
             mat4 prev_rot = mat4::id() // Only used for the case of looking directly upwards/downwards
         ) {
             vec3 k = (to - from).norm();

@@ -11,12 +11,12 @@ namespace vkr {
         has_changed = false;
     }
 
-    mvmath::mat4 Transform::inv_model_view() {
+    mvmath::mat4 Transform::inv_model_mat() {
         // Inverse of scaling is their reciprocals
         mvmath::mat4 inv_s = mvmath::mat4::scaling({
-            1 / scaling.x,
-            1 / scaling.y,
-            1 / scaling.z,
+            scaling.x == 0 ? scaling.x : 1 / scaling.x,
+            scaling.y == 0 ? scaling.y : 1 / scaling.y,
+            scaling.z == 0 ? scaling.z : 1 / scaling.z,
         });
         mvmath::mat4 inv_t = mvmath::mat4::translate({
             -position.x,

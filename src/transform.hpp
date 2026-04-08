@@ -15,7 +15,7 @@ namespace vkr {
 
         struct LookAt {
             mvmath::vec3 to;
-            mvmath::vec3 up = Transform::STD_UP;
+            mvmath::vec3 up;
             mvmath::mat4 prev_rot = mvmath::mat4::id();
         };
 
@@ -38,14 +38,14 @@ namespace vkr {
             return Rotation(Euler(euler_rad));
         }
 
+        // ! Assumes "to" vector to be a deslocation from vec3::zero()
         static constexpr Rotation from_look_at(
-            mvmath::vec3 at,
-            mvmath::vec3 from = mvmath::vec3(),
-            mvmath::vec3 up = Transform::STD_UP,
+            mvmath::vec3 to,
+            mvmath::vec3 up,
             mvmath::mat4 prev_rot = mvmath::mat4::id()
         ) {
             return Rotation(
-                LookAt(at - from, up, prev_rot)
+                LookAt(to, up, prev_rot)
             );
         }
 
@@ -59,9 +59,9 @@ namespace vkr {
                 return mvmath::mat4::rotate(euler.rad);
             case Type::LOOK_AT:
                 return mvmath::mat4::look_at(
-                    look.up,
                     mvmath::vec3_ZERO,
                     look.to,
+                    look.up,
                     look.prev_rot
                 );
             default:
@@ -95,9 +95,9 @@ namespace vkr {
             rotation = Rotation::from_euler(euler_rad);
         }
 
-        constexpr void look_at(mvmath::vec3 at) {
+        constexpr void look_at(mvmath::vec3 to) {
             has_changed = true;
-            rotation = Rotation::from_look_at(at, position);
+            rotation = Rotation::from_look_at(to - position, STD_UP);
         }
 
         constexpr void scale(float ratio) {
@@ -114,12 +114,12 @@ namespace vkr {
 
         constexpr mvmath::vec3 local_fwd() const { return STD_FORWARD; }
 
-        constexpr mvmath::vec3 world_up() {
+        inline mvmath::vec3 world_up() {
             if(has_changed) update();
             return world.col(mvmath::mat4::Y_COL).to_vec3(); // Returns y-axis
         }
 
-        constexpr mvmath::vec3 world_fwd() {
+        inline mvmath::vec3 world_fwd() {
             if(has_changed) update();
             return world.col(mvmath::mat4::Z_COL).to_vec3(); // Returns z-axis
         }
@@ -131,13 +131,13 @@ namespace vkr {
         constexpr mvmath::vec3 position_vec() const { return position; }
 
         // Model to world matrix
-        constexpr mvmath::mat4 model_view() {
+        inline mvmath::mat4 model_mat() {
             if(has_changed) update();
             return world;
         }
 
         // World to model matrix
-        mvmath::mat4 inv_model_view();
+        mvmath::mat4 inv_model_mat();
         void update();
     };
     
