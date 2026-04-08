@@ -11,6 +11,8 @@ namespace vkr {
         has_changed = false;
     }
 
+    // ? Preferred not to use Gauss-Jordan and inverse the matrix to make it
+    // ? explicit how the transformation and their inverse work
     mvmath::mat4 Transform::inv_model_mat() {
         // Inverse of scaling is their reciprocals
         mvmath::mat4 inv_s = mvmath::mat4::scaling({

@@ -90,6 +90,11 @@ namespace vkr {
         
         constexpr Transform() = default;
 
+        constexpr void translate(mvmath::vec3 pos) {
+            has_changed = true;
+            position = pos;
+        }
+
         constexpr void rotate(mvmath::vec3 euler_rad) {
             has_changed = true;
             rotation = Rotation::from_euler(euler_rad);
@@ -124,11 +129,13 @@ namespace vkr {
             return world.col(mvmath::mat4::Z_COL).to_vec3(); // Returns z-axis
         }
 
-        constexpr Rotation rotation_val() const { return rotation; }
-
+        constexpr bool changed() const { return changed; }
+        
         constexpr mvmath::vec3 scale_vec() const { return scaling; }
-
+        
         constexpr mvmath::vec3 position_vec() const { return position; }
+        
+        constexpr Rotation rotation_val() const { return rotation; }
 
         // Model to world matrix
         inline mvmath::mat4 model_mat() {
