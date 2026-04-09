@@ -16,28 +16,30 @@ namespace vkr {
 
     void Camera::update_mv() {
         view = view_mat();
-        mv_cache = view * model;
-        has_changed_mv = false;
+        modelview = view * model;
+        has_model_changed = false;
     }
 
     void Camera::update_vp() {
         // TODO
     }
 
-    mvmath::mat4 Camera::project(mvmath::vec3 v) {
-        if(transform.changed() || has_changed_mv) update_mv();
-        // TODO
+    mvmath::mat4 Camera::project() {
+        if(transform.changed() || has_model_changed) update_mv();
+        return proj_mat() * modelview;
     }
 
     mvmath::mat4 Camera::viewport() {
         // TODO
     }
-
-    mvmath::mat4 PerspCamera::proj_mat() {
-        // TODO
+    
+    mvmath::mat4 OrthoCamera::proj_mat() {
+        return mvmath::mat4::ortho_project(
+            near_plane, far_plane, l_frame, r_frame, b_frame, t_frame
+        );
     }
 
-    mvmath::mat4 OrthoCamera::proj_mat() {
+    mvmath::mat4 PerspCamera::proj_mat() {
         // TODO
     }
 

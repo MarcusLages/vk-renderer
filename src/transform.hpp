@@ -75,7 +75,7 @@ namespace vkr {
 
     struct Transform {
     private:
-        bool has_changed = false;
+        bool has_changed = true;
 
         mvmath::vec3 scaling = mvmath::vec3::one();
         mvmath::vec3 position = mvmath::vec3();
