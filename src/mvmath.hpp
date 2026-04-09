@@ -856,6 +856,69 @@ namespace mvmath {
             return mat4(vec4(i), vec4(j), vec4(k), l);
         }
 
+        // ! Z values will be in interval [0, 1]
+        constexpr static mat4 ortho_project(
+            float n, float f, // near and far plane depth
+            float l, float r,
+            float b, float t
+        ) {
+            float ax = 2 / (r - l);
+            float bx = -(r + l) / (r - l); // Not actually be as ax + b, but as ax + bz
+
+            float ay = 2 / (t - b);
+            float by = -(t + b) / (t - b); // Not actually be as ax + b, but as ax + bz
+
+            float az = -f / (f - n);
+            float bz = (-f * n) / (f - n);
+
+            return {
+                ax, 0, bx, 0,
+                0, ay, by, 0,
+                0, 0, az, bz,
+                0,  0,  0, 1
+            };
+        }
+        
+        // ! After z-division, z values will be in interval [0, 1]
+        // Considering symmetric projection (camera is on the center)
+        constexpr static mat4 persp_project(
+            float n, float f, // near and far plane depth
+            float l, float r,
+            float b, float t
+        ) {
+            float ax = (2 * n) / (r - l);
+            float bx = (r + l) / (r - l); // Not actually be as ax + b, but as ax + bz
+
+            float ay = (2 * n) / (t - b);
+            float by = (t + b) / (t - b); // Not actually be as ax + b, but as ax + bz
+
+            float az = -f / (f - n);
+            float bz = (-f * n) / (f - n);
+
+            return {
+                ax, 0, bx, 0,
+                0, ay, by, 0,
+                0, 0, az, bz,
+                0,  0, -1, 0
+            };
+        }
+
+        // ! After z-division, z values will be in interval [0, 1]
+        // Considering symmetric projection (camera is on the center)
+        constexpr static mat4 persp_project(
+            float n,           // near plane depth
+            float f,           // far plane depth
+            float fov_x,       // horizontal fov in degrees
+            float aspect_ratio // width / height
+        ) {
+            float l, r, b, t;
+            r = tanf(fov_x / 2) * n;
+            l = -r;
+            t = r / aspect_ratio;
+            b = -t;
+            return persp_project(n, f, l, r, b, t);
+        }
+        
     };
 
     inline constexpr vec2 vec2_ZERO = vec2();
