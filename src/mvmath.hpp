@@ -856,13 +856,13 @@ namespace mvmath {
             return mat4(vec4(i), vec4(j), vec4(k), l);
         }
 
-        using Frame = std::tuple<vec2, vec2>;
+        using WinCoord = std::tuple<vec2, vec2>;
 
         // Aspect ratio (ac) = width / height
         // Fov is the horizontal fov in degrees
         // n is the near plane depth (closest viewable plane)
         // Returns tuple as {bottom_left, top_right}
-        inline static Frame frame_from_fov(float fov, float ac, float n) {
+        inline static WinCoord frame_from_fov(float fov, float ac, float n) {
             vec2 bl, tr;
             tr.x = tan(deg_to_rad(fov / 2)) * n;
             tr.y = tr.x / ac;

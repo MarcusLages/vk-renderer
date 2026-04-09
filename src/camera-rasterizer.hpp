@@ -7,15 +7,26 @@ namespace vkr {
 
     struct Camera {
     private:
-        bool has_model_changed = true; // ModelView
-        bool has_changed_vp = true;    // Viewport
+        bool has_changed_m = true;    // Model
+                                      // Not necessary for View, as that comes from transform
+        bool has_changed_vp = true;   // Viewport
+        bool has_changed_proj = true; // Projection matrix
 
+        // Window screen size
         int sc_width;
-        int sc_height; 
+        int sc_height;
+        
+        // Projection frame coordinates
+        float r_frame = 1, l_frame = -1;
+        float t_frame = 1, b_frame = -1;
+
+        float near_plane; // Depth value (z-value) of closest viewable object
+        float far_plane;  // Depth value (z-value) of furthest viewable object
         
         // ? Will store the model mat to make it to pre-compute mvp since we only have one model for now
         mvmath::mat4 model = mvmath::mat4::id(); // Model transformation
         mvmath::mat4 view  = mvmath::mat4::id(); // View/Camera transformation
+        mvmath::mat4 proj  = mvmath::mat4::id(); // Projection transformation
         mvmath::mat4 vport = mvmath::mat4::id(); // Clip space to Viewport transformation
 
         mvmath::mat4 modelview = mvmath::mat4::id(); // ModelView precomputed together
@@ -27,13 +38,6 @@ namespace vkr {
         constexpr static mvmath::vec3 STD_TARGET = {0, 0, 0};
     
         Transform transform;
-
-        // Projection frame coordinates
-        float r_frame = 1, l_frame = -1;
-        float t_frame = 1, b_frame = -1;
-
-        float near_plane; // Depth value (z-value) of closest viewable object
-        float far_plane;  // Depth value (z-value) of furthest viewable object
 
         Camera(
             mvmath::vec3 pos, 
@@ -63,16 +67,41 @@ namespace vkr {
         }
 
         constexpr void set_model(mvmath::mat4 m) {
-            has_model_changed = true;
+            has_changed_m = true;
             model = m;
+        }
+
+        constexpr void set_proj_frame(float r, float l, float t, float b) {
+            has_changed_proj = true;
+            r_frame = r_frame;
+            l_frame = l_frame;
+            t_frame = t_frame;
+            b_frame = b_frame;
+        }
+
+        using WinCoord = mvmath::mat4::WinCoord;
+        constexpr WinCoord proj_frame() const {
+            mvmath::vec2 bl(b_frame, l_frame);
+            mvmath::vec2 tr(t_frame, l_frame);
+            return {bl, tr};
+        }
+
+        constexpr void set_nf_planes(float near_plane, float far_plane) {
+            has_changed_proj = true;
+            this->near_plane = near_plane; 
+            this->far_plane = far_plane; 
+        }
+
+        constexpr std::tuple<float, float> nf_planes() const {
+            return {near_plane, far_plane};
         }
         
         // Update the matrices before making the mvp/viewport matrix
         void update_mv();
+        void update_proj();
         void update_vp();
 
         // From model to clip space (not-clipped)
-        // TODO: Use pre-computation on project too
         mvmath::mat4 project(); // Default projection symmetric on origin
 
         // From clip space (should be clipped) to window space
@@ -113,10 +142,7 @@ namespace vkr {
             auto [bl, tr] = mvmath::mat4::frame_from_fov(
                 fov_x, sc_width / sc_height, near_plane
             );
-            r_frame = tr.x;
-            l_frame = bl.x;
-            t_frame = tr.y;
-            b_frame = bl.y;
+            set_proj_frame(tr.x, bl.x, tr.y, bl.y);
         }
 
         float get_fov();
