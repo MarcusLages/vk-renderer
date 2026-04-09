@@ -72,7 +72,7 @@ namespace vkr {
         void update_vp();
 
         // From model to clip space (not-clipped)
-        // Use pre-computation on project too
+        // TODO: Use pre-computation on project too
         mvmath::mat4 project(); // Default projection symmetric on origin
 
         // From clip space (should be clipped) to window space

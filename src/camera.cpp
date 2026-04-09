@@ -40,7 +40,9 @@ namespace vkr {
     }
 
     mvmath::mat4 PerspCamera::proj_mat() {
-        // TODO
+        return mvmath::mat4::persp_project(
+            near_plane, far_plane, l_frame, r_frame, b_frame, t_frame
+        );
     }
 
 }
