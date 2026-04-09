@@ -856,6 +856,21 @@ namespace mvmath {
             return mat4(vec4(i), vec4(j), vec4(k), l);
         }
 
+        using Frame = std::tuple<vec2, vec2>;
+
+        // Aspect ratio (ac) = width / height
+        // Fov is the horizontal fov in degrees
+        // n is the near plane depth (closest viewable plane)
+        // Returns tuple as {bottom_left, top_right}
+        inline static Frame frame_from_fov(float fov, float ac, float n) {
+            vec2 bl, tr;
+            tr.x = tan(deg_to_rad(fov / 2)) * n;
+            tr.y = tr.x / ac;
+            bl.x = -tr.x;
+            bl.y = -tr.y;
+            return {bl, tr};
+        }
+
         // ! Z values will be in interval [0, 1]
         constexpr static mat4 ortho_project(
             float n, float f, // near and far plane depth
@@ -905,18 +920,14 @@ namespace mvmath {
 
         // ! After z-division, z values will be in interval [0, 1]
         // Considering symmetric projection (camera is on the center)
-        constexpr static mat4 persp_project(
+        inline static mat4 persp_project(
             float n,           // near plane depth
             float f,           // far plane depth
             float fov_x,       // horizontal fov in degrees
             float aspect_ratio // width / height
         ) {
-            float l, r, b, t;
-            r = tanf(fov_x / 2) * n;
-            l = -r;
-            t = r / aspect_ratio;
-            b = -t;
-            return persp_project(n, f, l, r, b, t);
+            auto [bl, tr] = frame_from_fov(fov_x, aspect_ratio, n);
+            return persp_project(n, f, bl.x, tr.x, bl.x, tr.y);
         }
         
     };
