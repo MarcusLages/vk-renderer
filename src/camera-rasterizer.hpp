@@ -56,14 +56,17 @@ namespace vkr {
         }
 
         constexpr void set_screen_info(int width, int height) {
+            has_changed_vp = true;
             sc_width = width;
             sc_height = height;
-            has_changed_vp = true;
         }
 
-        // Returns std::tuple{w, h}
-        constexpr std::tuple<int, int> screen_info() const {
-            return {sc_width, sc_height};
+        constexpr int screen_height() const {
+            return sc_height;
+        }
+
+        constexpr int screen_width() const {
+            return sc_width;
         }
 
         constexpr void set_model(mvmath::mat4 m) {
@@ -139,17 +142,18 @@ namespace vkr {
             float near_plane = STD_NEAR_PLANE,
             float far_plane = STD_FAR_PLANE
         ) : Camera(sc_width, sc_height, near_plane, far_plane) {
-            auto [bl, tr] = mvmath::mat4::frame_from_fov(
-                fov_x, sc_width / sc_height, near_plane
-            );
-            set_proj_frame(tr.x, bl.x, tr.y, bl.y);
+            set_fov(fov_x, sc_width / sc_height);
         }
 
-        float get_fov();
+        // ! Horizontal fov in degrees
+        // ! Requires the frame to be symmetrical horizontally (r = -l)
+        float fov() const;
 
         // ! Horizontal fov in degrees
         // ! Alters projection frame coordinates (rltb)
-        void set_fov(float fov);
+        // ! If aspect ratio (ac) != screen_width() / screen_height(), image will be stretched
+        // ! Makes the frame to symmetrical horizontally (r = -l) and vertically (t = -b)
+        void set_fov(float fov, float ac);
 
         mvmath::mat4 proj_mat() override;
     };

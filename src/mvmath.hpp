@@ -870,6 +870,11 @@ namespace mvmath {
             bl.y = -tr.y;
             return {bl, tr};
         }
+        
+        // n is the near plane depth (closest viewable plane)
+        inline static float fov_from_length(float len, float n) {
+            return rad_to_deg(atanf(len / n));
+        }
 
         // ! Z values will be in interval [0, 1]
         constexpr static mat4 ortho_project(

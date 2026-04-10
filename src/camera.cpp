@@ -45,6 +45,18 @@ namespace vkr {
         return mvmath::mat4::ortho_project(n, f, bl.x, tr.x, bl.y, tr.y);
     }
 
+    float PerspCamera::fov() const {
+        auto [_, tr] = proj_frame();
+        auto [n, _] = nf_planes();
+        return 2 * mvmath::mat4::fov_from_length(tr.x, n); // tr.x is only half
+    }
+
+    void PerspCamera::set_fov(float fov, float ac) {
+        auto [n, _] = nf_planes();
+        auto [bl, tr] = mvmath::mat4::frame_from_fov(fov, ac, n);
+        set_proj_frame(tr.x, bl.x, tr.y, bl.y);
+    }
+
     mvmath::mat4 PerspCamera::proj_mat() {
         auto [n, f] = nf_planes();
         auto [bl, tr] = proj_frame();
