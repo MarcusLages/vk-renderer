@@ -11,7 +11,7 @@ namespace vkr {
     }
 
     mvmath::mat4 Camera::vport_mat() {
-        // TODO
+        return mvmath::mat4::viewport(sc_width, sc_height);
     }
 
     void Camera::update_mv() {
@@ -26,7 +26,8 @@ namespace vkr {
     }
 
     void Camera::update_vp() {
-        // TODO
+        vport = vport_mat();
+        has_changed_vp = false;
     }
 
     mvmath::mat4 Camera::project() {
@@ -36,7 +37,8 @@ namespace vkr {
     }
 
     mvmath::mat4 Camera::viewport() {
-        // TODO
+        if(has_changed_vp) update_vp();
+        return vport;
     }
     
     mvmath::mat4 OrthoCamera::proj_mat() {

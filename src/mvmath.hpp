@@ -934,6 +934,18 @@ namespace mvmath {
             auto [bl, tr] = frame_from_fov(fov_x, aspect_ratio, n);
             return persp_project(n, f, bl.x, tr.x, bl.x, tr.y);
         }
+
+        // ! w and h should be the amount of pixels on the window 
+        //   So interval [1, w or h], not [0, w-1 or h-1]
+        // ! MUST: w >= 1 and h >= 1
+        constexpr static mat4 viewport(int w, int h) {
+            return {
+                w/2, 0, 0, (w-1)/2,
+                h/2, 0, 0, (h-1)/2,
+                0,   0, 1,   0,
+                0,   0, 0,   1
+            };
+        }
         
     };
 
