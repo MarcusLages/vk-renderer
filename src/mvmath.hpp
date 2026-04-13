@@ -6,6 +6,9 @@ namespace mvmath {
 
     inline constexpr float eps = 1e-5f;
     
+    constexpr float deg_to_rad(float deg);
+    constexpr float rad_to_deg(float rad);
+    
     struct vec2 {
         union {
             float coord[2] = {0, 0};
