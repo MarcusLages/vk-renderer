@@ -945,11 +945,13 @@ namespace mvmath {
         //   So interval [1, w or h], not [0, w-1 or h-1]
         // ! MUST: w >= 1 and h >= 1
         constexpr static mat4 viewport(int w, int h) {
+            float wf = static_cast<float>(w);
+            float hf = static_cast<float>(h);
             return {
-                w/2, 0, 0, (w-1)/2,
-                h/2, 0, 0, (h-1)/2,
-                0,   0, 1,   0,
-                0,   0, 0,   1
+                wf/2, 0, 0, (wf-1)/2,
+                0, hf/2, 0, (hf-1)/2,
+                0,    0, 1,   0,
+                0,    0, 0,   1
             };
         }
         
