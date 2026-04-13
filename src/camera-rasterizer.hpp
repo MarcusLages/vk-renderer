@@ -105,7 +105,7 @@ namespace vkr {
         void update_vp();
 
         // From model to clip space (not-clipped)
-        mvmath::mat4 project(); // Default projection symmetric on origin
+        mvmath::mat4 project();
 
         // From clip space (should be clipped) to window space
         mvmath::mat4 viewport();
@@ -181,6 +181,7 @@ namespace vkr {
             Color col
         );
 
+        void render_no_mat(); // Initial render with no matrices
         void render() override;
 
     };

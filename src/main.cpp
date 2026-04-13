@@ -19,25 +19,36 @@ int main(int argc, char** argv) {
     constexpr int width  = 800;
     constexpr int height = 800;
     
+    vkr::Model model(argv[1]);
+
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();
 
     vkr::sdl::SDLTarget sdl(width, height);
     auto& sdl_fb = sdl.framebuffer();
 
-    vkr::Model model(argv[1]);
-    vkr::LineRenderer tga_line_render(tga_fb, model, vkr::COL_RED);
-    vkr::LineRenderer sdl_line_render(sdl_fb, model, vkr::COL_RED);
-    vkr::FlatRasterizer tga_flat_render(tga_fb, model);
-    vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
+    //* RENDERERS
 
-    tga_flat_render.render();
-    sdl_flat_render.render();
+    // LineRenderer
+    // vkr::LineRenderer tga_line_render(tga_fb, model, vkr::COL_RED);
+    // vkr::LineRenderer sdl_line_render(sdl_fb, model, vkr::COL_RED);
     // tga_line_render.render();
     // sdl_line_render.render();
-    
-    // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, tga_fb);
-    // vkr::FlatRasterizer::draw_triangle_scanline(a, b, c, vkr::COL_RED, sdl_fb);
+
+    // FlatRenderer
+    // vkr::FlatRasterizer tga_flat_render(tga_fb, model);
+    // vkr::FlatRasterizer sdl_flat_render(sdl_fb, model);
+    // tga_flat_render.render();
+    // sdl_flat_render.render();
+
+    // CameraRenderer
+    const float fov = 90;
+    vkr::PerspCamera cam(vkr::Camera::STD_POS, width, height, fov); 
+    // vkr::OrthoCamera cam(vkr::Camera::STD_POS, width, height, fov);
+    vkr::CameraRasterizer tga_cam_render(tga_fb, model, cam);
+    vkr::CameraRasterizer sdl_cam_render(sdl_fb, model, cam);
+    tga_cam_render.render();
+    sdl_cam_render.render();
 
     tga.present();
     sdl.run();

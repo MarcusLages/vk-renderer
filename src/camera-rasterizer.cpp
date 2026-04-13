@@ -10,7 +10,6 @@ namespace vkr {
         mvmath::vec3 c,
         Color col
     ) {
-        // TODO
         mvmath::vec2 a_v2 = {a.x, a.y};
         mvmath::vec2 b_v2 = {b.x, b.y};
         mvmath::vec2 c_v2 = {c.x, c.y};
@@ -43,7 +42,7 @@ namespace vkr {
         }
     }
 
-    void CameraRasterizer::render() {
+    void CameraRasterizer::render_no_mat() {
         std::tuple<int, int> frame = {
             fb.width() * FRAME_PERCENTAGE, fb.height() * FRAME_PERCENTAGE
         };
@@ -53,6 +52,33 @@ namespace vkr {
             mvmath::vec3 a = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 0), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
             mvmath::vec3 b = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 1), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
             mvmath::vec3 c = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 2), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
+
+            draw_triangle(
+                a, b, c,
+                (is_color_rand) ? get_rand_col() : tri_col
+            );
+        }
+    }
+    
+    void CameraRasterizer::render() {
+        // cam.set_model(model.mat()); // TODO: add model transform to Model
+        mvmath::mat4 proj = cam.project();
+        mvmath::mat4 vp = cam.viewport();
+
+        for(int i = 0; i < model.faces_len(); i++) {
+            mvmath::vec4 va = mvmath::vec4(model.vert(i, 0), 1);
+            mvmath::vec4 vb = mvmath::vec4(model.vert(i, 1), 1);
+            mvmath::vec4 vc = mvmath::vec4(model.vert(i, 2), 1);
+
+            mvmath::vec4 pa = proj * va;
+            mvmath::vec4 pb = proj * vb;
+            mvmath::vec4 pc = proj * vc;
+
+            // TODO: Clipping next
+
+            mvmath::vec3 a = (vp * pa.homog_div()).to_vec3();
+            mvmath::vec3 b = (vp * pb.homog_div()).to_vec3();
+            mvmath::vec3 c = (vp * pc.homog_div()).to_vec3();
 
             draw_triangle(
                 a, b, c,

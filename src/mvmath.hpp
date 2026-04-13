@@ -357,7 +357,13 @@ namespace mvmath {
 
         // Homogeneous coordinate divide 
         // ! OBS: does not check for zero division
-        vec3 homogeneous_div() const {
+        vec4 homog_div() const {
+            return (*this / w);
+        }
+
+        // Homogeneous coordinate divide (+ vec3 coord) 
+        // ! OBS: does not check for zero division
+        vec3 homog_div3() const {
             return (*this / w).to_vec3();
         }
 
