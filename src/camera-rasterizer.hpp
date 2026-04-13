@@ -34,7 +34,7 @@ namespace vkr {
     public:
         constexpr static float STD_NEAR_PLANE = 0.05;
         constexpr static float STD_FAR_PLANE = 10;
-        constexpr static mvmath::vec3 STD_POS = {0, 0, -2};
+        constexpr static mvmath::vec3 STD_POS = {0, 0, 1.5};
         constexpr static mvmath::vec3 STD_TARGET = {0, 0, 0};
     
         Transform transform;

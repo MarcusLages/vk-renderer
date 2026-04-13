@@ -114,9 +114,9 @@ namespace mvmath {
         }
     
     public:
-        template<typename... Vec2s>
+        template<std::same_as<vec2>... Vec2s>
         constexpr static std::tuple<vec2, vec2> bound_box(vec2 v, Vec2s... vn) {
-            auto [min_p, max_p] = bound_box(v, vn...);
+            auto [min_p, max_p] = bound_box(vn...);
             return {
                 vec2(std::min(v.x, min_p.x), std::min(v.y, min_p.y)),
                 vec2(std::max(v.x, max_p.x), std::max(v.y, max_p.y))
