@@ -55,7 +55,6 @@ namespace vkr {
             fb.width() * FRAME_PERCENTAGE, fb.height() * FRAME_PERCENTAGE
         };
         for(int i = 0; i < model.faces_len(); i++) {
-            // TODO: Clipping next
             mvmath::vec3 a = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 0), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
             mvmath::vec3 b = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 1), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
             mvmath::vec3 c = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 2), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
@@ -68,7 +67,7 @@ namespace vkr {
     }
     
     void CameraRasterizer::render() {
-        // cam.set_model(model.mat()); // TODO: add model transform to Model
+        cam.set_model(model.transform.model_mat());
         mvmath::mat4 proj = cam.project();
         mvmath::mat4 vp = cam.viewport();
 

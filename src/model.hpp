@@ -11,9 +11,9 @@ namespace vkr {
     class Model {
         std::vector<mvmath::vec3> vertices = {};
         std::vector<int> faces = {};
-        Transform transform;
         
     public:
+        Transform transform;
         const std::tuple<float, float> vert_range = {}; // Min-max of vertex coordinates (def = {-1, 1})
         
         Model(const std::string filename, float min_vrange = -1, float max_vrange = 1);

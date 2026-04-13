@@ -20,6 +20,7 @@ int main(int argc, char** argv) {
     constexpr int height = 800;
     
     vkr::Model model(argv[1]);
+    model.transform.rotate({mvmath::deg_to_rad(10), mvmath::deg_to_rad(15), 0});
 
     vkr::tga::TGATarget tga(width, height, vkr::tga::TGAImage::RGB);
     auto& tga_fb = tga.framebuffer();
@@ -43,7 +44,7 @@ int main(int argc, char** argv) {
 
     // CameraRenderer
     const float fov = 90;
-    vkr::PerspCamera cam(vkr::Camera::STD_POS, width, height, fov); 
+    vkr::PerspCamera cam(vkr::Camera::STD_POS, width, height, fov);
     // vkr::OrthoCamera cam(vkr::Camera::STD_POS, width, height, fov);
     vkr::CameraRasterizer tga_cam_render(tga_fb, model, cam);
     vkr::CameraRasterizer sdl_cam_render(sdl_fb, model, cam);
