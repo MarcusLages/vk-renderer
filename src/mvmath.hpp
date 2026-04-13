@@ -107,6 +107,22 @@ namespace mvmath {
             return *this / l;
         }
 
+    private: 
+        // Just to make sure no one can call bound_box with one arg
+        constexpr static std::tuple<vec2, vec2> bound_box(vec2 v) {
+            return {v, v};
+        }
+    
+    public:
+        template<typename... Vec2s>
+        constexpr static std::tuple<vec2, vec2> bound_box(vec2 v, Vec2s... vn) {
+            auto [min_p, max_p] = bound_box(v, vn...);
+            return {
+                vec2(std::min(v.x, min_p.x), std::min(v.y, min_p.y)),
+                vec2(std::max(v.x, max_p.x), std::max(v.y, max_p.y))
+            };
+        }
+
         constexpr static vec2 one() { return vec2(1.); }
 
     };

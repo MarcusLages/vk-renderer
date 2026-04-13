@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "camera-rasterizer.hpp"
 #include "render-utils.hpp"
 
@@ -10,11 +11,18 @@ namespace vkr {
         mvmath::vec3 c,
         Color col
     ) {
-        mvmath::vec2 a_v2 = {a.x, a.y};
-        mvmath::vec2 b_v2 = {b.x, b.y};
-        mvmath::vec2 c_v2 = {c.x, c.y};
-        mvmath::vec2 min_box = { std::round(std::min(std::min(a.x, b.x), c.x)), std::round(std::min(std::min(a.y, b.y), c.y)) };
-        mvmath::vec2 max_box = { std::round(std::max(std::max(a.x, b.x), c.x)), std::round(std::max(std::max(a.y, b.y), c.y)) };
+        mvmath::vec2 a_v2 = a.to_vec2();
+        mvmath::vec2 b_v2 = b.to_vec2();
+        mvmath::vec2 c_v2 = c.to_vec2();
+
+        auto [min_p, max_p] = mvmath::vec2::bound_box(a_v2, b_v2, c_v2);
+        // Clamping and rounding min/max points
+        min_p.x = std::clamp(std::round(min_p.x), 0.f, static_cast<float>(fb.width()));
+        min_p.y = std::clamp(std::round(min_p.y), 0.f, static_cast<float>(fb.width()));
+
+        max_p.x = std::clamp(std::round(max_p.x), 0.f, static_cast<float>(fb.width()));
+        max_p.y = std::clamp(std::round(max_p.y), 0.f, static_cast<float>(fb.width()));
+
         float total_area = mvmath::signed_tri_area(a_v2, b_v2, c_v2);
 
         // Less than one because we are skipping triangles facing the wrong direction
@@ -23,8 +31,8 @@ namespace vkr {
 
         // TODO: make this concurrent (OpenMP or another thing), can't do it now because of sdl
         // #pragma omp parallel for
-        for(float x = min_box.x; x <= max_box.x; x++) {
-            for(float y = min_box.y; y <= max_box.y; y++) {
+        for(float x = min_p.x; x <= max_p.x; x++) {
+            for(float y = min_p.y; y <= max_p.y; y++) {
                 mvmath::vec2 p = {x, y};
                 float alpha = mvmath::signed_tri_area(p, b_v2, c_v2) / total_area;
                 float beta = mvmath::signed_tri_area(a_v2, p, c_v2) / total_area;
@@ -47,7 +55,6 @@ namespace vkr {
             fb.width() * FRAME_PERCENTAGE, fb.height() * FRAME_PERCENTAGE
         };
         for(int i = 0; i < model.faces_len(); i++) {
-            // TODO: PIPELINE
             // TODO: Clipping next
             mvmath::vec3 a = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 0), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);
             mvmath::vec3 b = mvmath::central_ortho_project_z(mvmath::persp_project(model.vert(i, 1), {0, 0, 2}, M_PI / 2, 2), model.vert_range, frame);

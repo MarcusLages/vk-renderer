@@ -8,7 +8,7 @@ Initial code and implementation based on [tinyrenderer](https://haqr.eu/tinyrend
 The executable is compiled to `/build` and to the root folder.
 Linux:
 ```bash
-export CMAKE_PREFIX_PATH='WHEREVER SDL AND OTHER LIBRARIES CMAKE ARE'
+export CMAKE_PREFIX_PATH='WHEREVER SDL AND OTHER CMAKE LIBRARIES ARE'
 cmake -Bbuild
 cmake --build build -j
 build/vkr obj/diablo3_pose/diablo3_pose.obj obj/floor.obj
@@ -16,7 +16,7 @@ build/vkr obj/diablo3_pose/diablo3_pose.obj obj/floor.obj
 
 Windows:
 ```bash
-set CMAKE_PREFIX_PATH='WHEREVER SDL AND OTHER LIBRARIES CMAKE ARE'
+set CMAKE_PREFIX_PATH='WHEREVER SDL AND OTHER CMAKE LIBRARIES ARE'
 cmake -Bbuild
 cmake --build build -j
 build\vkr.exe obj\diablo3_pose\diablo3_pose.obj obj\floor.obj
