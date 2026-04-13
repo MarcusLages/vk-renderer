@@ -49,7 +49,7 @@ namespace vkr {
 
     float PerspCamera::fov() const {
         auto [_, tr] = proj_frame();
-        auto [n, _] = nf_planes();
+        auto [n, _f] = nf_planes();
         return 2 * mvmath::mat4::fov_from_length(tr.x, n); // tr.x is only half
     }
 

@@ -76,16 +76,16 @@ namespace vkr {
 
         constexpr void set_proj_frame(float r, float l, float t, float b) {
             has_changed_proj = true;
-            r_frame = r_frame;
-            l_frame = l_frame;
-            t_frame = t_frame;
-            b_frame = b_frame;
+            r_frame = r;
+            l_frame = l;
+            t_frame = t;
+            b_frame = b;
         }
 
         using WinCoord = mvmath::mat4::WinCoord;
         constexpr WinCoord proj_frame() const {
-            mvmath::vec2 bl(b_frame, l_frame);
-            mvmath::vec2 tr(t_frame, l_frame);
+            mvmath::vec2 bl(l_frame, b_frame);
+            mvmath::vec2 tr(r_frame, t_frame);
             return {bl, tr};
         }
 
@@ -126,7 +126,7 @@ namespace vkr {
             int sc_height,
             float near_plane = STD_NEAR_PLANE,
             float far_plane = STD_FAR_PLANE)
-        : Camera(sc_width, sc_height, near_plane, far_plane) { }
+        : Camera(pos, sc_width, sc_height, near_plane, far_plane) { }
 
         mvmath::mat4 proj_mat() override;
     };
@@ -141,8 +141,8 @@ namespace vkr {
             float fov_x = STD_FOV_X,
             float near_plane = STD_NEAR_PLANE,
             float far_plane = STD_FAR_PLANE
-        ) : Camera(sc_width, sc_height, near_plane, far_plane) {
-            set_fov(fov_x, sc_width / sc_height);
+        ) : Camera(pos, sc_width, sc_height, near_plane, far_plane) {
+            set_fov(fov_x, static_cast<float>(sc_width) / sc_height);
         }
 
         // ! Horizontal fov in degrees
