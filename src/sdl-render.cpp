@@ -141,6 +141,7 @@ namespace vkr {
                         quit = true;
             }
         }
+        
         // TODO: take this out later when I have a centralized runner
         void SDLTarget::run_depth() {
             bool quit = false;

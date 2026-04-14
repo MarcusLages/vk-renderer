@@ -5,13 +5,17 @@
 namespace mvmath {
 
     inline constexpr float eps = 1e-5f;
-    
+    inline constexpr int HALF_ROT_DEG = 180;
+
     constexpr float deg_to_rad(float deg);
     constexpr float rad_to_deg(float rad);
     
     struct vec2 {
+
+        constexpr static int LEN = 2;
+
         union {
-            float coord[2] = {0, 0};
+            float coord[LEN] = {0, 0};
             struct {
                 float x;
                 float y;
@@ -128,8 +132,11 @@ namespace mvmath {
     };
     
     struct vec3 {
+
+        constexpr static int LEN = 3;
+
         union {
-            float coord[3] = {0, 0, 0};
+            float coord[LEN] = {0, 0, 0};
             struct {
                 float x;
                 float y;
@@ -248,8 +255,11 @@ namespace mvmath {
     };
 
     struct vec4 {
+
+        constexpr static int LEN = 4;
+
         union {
-            float coord[4] = {0, 0, 0, 0};
+            float coord[LEN] = {0, 0, 0, 0};
             struct {
                 float x;
                 float y;
@@ -390,13 +400,18 @@ namespace mvmath {
     };
     
     struct mat3 {
+
+        constexpr static int ROW_LEN = 3;
+        constexpr static int COL_LEN = 3;
+        constexpr static int LEN = 9;
+
         union {
-            float coord[3][3] = {
+            float coord[COL_LEN][ROW_LEN] = {
                 {0, 0, 0},
                 {0, 0, 0},
                 {0, 0, 0}
             };
-            float coord_flat[9];
+            float coord_flat[LEN];
             struct {
                 float ix, jx, kx;
                 float iy, jy, ky;
@@ -442,15 +457,14 @@ namespace mvmath {
         } {}
 
         constexpr mat3 operator+=(mat3 m) {
-            // TODO: take out 9s and 16s
-            for(int i = 0; i < 9; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] += m.coord_flat[i];
             }
             return *this;
         }
 
         constexpr mat3 operator-=(mat3 m) {
-            for(int i = 0; i < 9; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] -= m.coord_flat[i];
             }
             return *this;
@@ -467,14 +481,14 @@ namespace mvmath {
         }
 
         constexpr mat3 operator*=(float sc) {
-            for(int i = 0; i < 9; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] *= sc;
             }
             return *this;
         }
 
         constexpr mat3 operator/=(float sc) {
-            for(int i = 0; i < 9; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] /= sc;
             }
             return *this;
@@ -540,11 +554,19 @@ namespace mvmath {
         }
 
         constexpr const vec3 row(const Row row) {
-            return {coord[row][0], coord[row][1], coord[row][2]};
+            return {
+                coord[row][Col::X_COL],
+                coord[row][Col::Y_COL],
+                coord[row][Col::Z_COL]
+            };
         }
         
         constexpr const vec3 col(const Col col) {
-            return {coord[0][col], coord[1][col], coord[2][col]};
+            return {
+                coord[Row::X_ROW][col],
+                coord[Row::Y_ROW][col],
+                coord[Row::Z_ROW][col]
+            };
         }
 
         constexpr static mat3 one() { return mat3(1.); }
@@ -574,14 +596,19 @@ namespace mvmath {
     };
 
     struct mat4 {
+
+        constexpr static int ROW_LEN = 4;
+        constexpr static int COL_LEN = 4;
+        constexpr static int LEN = 16;
+
         union {
-            float coord[4][4] = {
+            float coord[COL_LEN][ROW_LEN] = {
                 {0, 0, 0, 0},
                 {0, 0, 0, 0},
                 {0, 0, 0, 0},
                 {0, 0, 0, 0}
             };
-            float coord_flat[16];
+            float coord_flat[LEN];
             struct {
                 float ix, jx, kx, lx;
                 float iy, jy, ky, ly;
@@ -634,14 +661,14 @@ namespace mvmath {
         } {}
 
         constexpr mat4 operator+=(mat4 m) {
-            for(int i = 0; i < 16; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] += m.coord_flat[i];
             }
             return *this;
         }
 
         constexpr mat4 operator-=(mat4 m) {
-            for(int i = 0; i < 16; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] -= m.coord_flat[i];
             }
             return *this;
@@ -658,14 +685,14 @@ namespace mvmath {
         }
 
         constexpr mat4 operator*=(float sc) {
-            for(int i = 0; i < 16; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] *= sc;
             }
             return *this;
         }
 
         constexpr mat4 operator/=(float sc) {
-            for(int i = 0; i < 16; i++) {
+            for(int i = 0; i < LEN; i++) {
                 coord_flat[i] /= sc;
             }
             return *this;
@@ -743,11 +770,21 @@ namespace mvmath {
         }
 
         constexpr const vec4 row(const Row row) {
-            return {coord[row][0], coord[row][1], coord[row][2], coord[row][3]};
+            return {
+                coord[row][Col::X_COL],
+                coord[row][Col::Y_COL],
+                coord[row][Col::Z_COL],
+                coord[row][Col::W_COL]
+            };
         }
         
         constexpr const vec4 col(const Col col) {
-            return {coord[0][col], coord[1][col], coord[2][col], coord[3][col]};
+            return {
+                coord[Row::X_ROW][col],
+                coord[Row::Y_ROW][col],
+                coord[Row::Z_ROW][col],
+                coord[Row::W_ROW][col]
+            };
         }
 
         constexpr static mat4 one() { return mat4(1.); }
@@ -908,10 +945,10 @@ namespace mvmath {
             float b, float t
         ) {
             float ax = 2 / (r - l);
-            float bx = -(r + l) / (r - l); // Not actually be as ax + b, but as ax + bz
+            float bx = -(r + l) / (r - l); // Not actually b as in ax + b, but as in ax + bz
 
             float ay = 2 / (t - b);
-            float by = -(t + b) / (t - b); // Not actually be as ax + b, but as ax + bz
+            float by = -(t + b) / (t - b); // Not actually b as in ax + b, but as in ax + bz
 
             float az = -f / (f - n);
             float bz = (-f * n) / (f - n);
@@ -932,10 +969,10 @@ namespace mvmath {
             float b, float t
         ) {
             float ax = (2 * n) / (r - l);
-            float bx = (r + l) / (r - l); // Not actually be as ax + b, but as ax + bz
+            float bx = (r + l) / (r - l); // Not actually b as in ax + b, but as in ax + bz
 
             float ay = (2 * n) / (t - b);
-            float by = (t + b) / (t - b); // Not actually be as ax + b, but as ax + bz
+            float by = (t + b) / (t - b); // Not actually b as in ax + b, but as in ax + bz
 
             float az = -f / (f - n);
             float bz = (-f * n) / (f - n);
@@ -996,11 +1033,11 @@ namespace mvmath {
     // * Utils Functions
 
     constexpr float deg_to_rad(float deg) {
-        return (deg * M_PI) / 180;
+        return (deg * M_PI) / HALF_ROT_DEG;
     }
 
     constexpr float rad_to_deg(float rad) {
-        return (rad * 180) / M_PI;
+        return (rad * HALF_ROT_DEG) / M_PI;
     }
     
     // This version uses cross product so it performs more calculations and
