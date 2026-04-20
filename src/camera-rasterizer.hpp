@@ -181,7 +181,7 @@ namespace vkr {
             Color col
         );
 
-        void render_no_mat(); // Initial render with no matrices
+        void render_no_mat(); // Initial render using no matrices, hardcoded transformations and projection
         void render() override;
 
     };
