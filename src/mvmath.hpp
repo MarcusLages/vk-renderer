@@ -71,12 +71,12 @@ namespace mvmath {
             return res /= sc;
         }
         
-        bool operator==(vec2 v) const {
+        inline bool operator==(vec2 v) const {
             return std::fabs(x - v.x) < eps &&
                    std::fabs(y - v.y) < eps;
         }
 
-        bool operator!=(vec2 v) const {
+        inline bool operator!=(vec2 v) const {
             return !(*this == v);
         }
 
@@ -100,11 +100,11 @@ namespace mvmath {
             return *this / sc;
         }
 
-        float len() const {
+        inline float len() const {
             return std::sqrt(x * x + y * y);
         }
 
-        vec2 norm() const {
+        inline vec2 norm() const {
             float l = this->len();
             if(l < eps) 
                 return vec2();
@@ -197,13 +197,13 @@ namespace mvmath {
             return res /= sc;
         }
         
-        bool operator==(vec3 v) const {
+        inline bool operator==(vec3 v) const {
             return std::fabs(x - v.x) < eps &&
                    std::fabs(y - v.y) < eps &&
                    std::fabs(z - v.z) < eps;
         }
 
-        bool operator!=(vec3 v) const {
+        inline bool operator!=(vec3 v) const {
             return !(*this == v);
         }
 
@@ -235,11 +235,11 @@ namespace mvmath {
             return *this / sc;
         }
 
-        float len() const {
+        inline float len() const {
             return std::sqrt(x * x + y * y + z * z);
         }
 
-        vec3 norm() const {
+        inline vec3 norm() const {
             float l = this->len();
             if(l < eps) 
                 return vec3();
@@ -247,7 +247,7 @@ namespace mvmath {
         }
 
         // Slices z coord
-        vec2 to_vec2() const {
+        constexpr vec2 to_vec2() const {
             return {x, y};
         }
         
@@ -329,14 +329,14 @@ namespace mvmath {
             return res /= sc;
         }
         
-        bool operator==(vec4 v) const {
+        inline bool operator==(vec4 v) const {
             return std::fabs(x - v.x) < eps &&
                    std::fabs(y - v.y) < eps &&
                    std::fabs(z - v.z) < eps &&
                    std::fabs(w - v.w) < eps;
         }
 
-        bool operator!=(vec4 v) const {
+        inline bool operator!=(vec4 v) const {
             return !(*this == v);
         }
 
@@ -363,11 +363,11 @@ namespace mvmath {
             return *this / sc;
         }
 
-        float len() const {
+        inline float len() const {
             return std::sqrt(x * x + y * y + z * z + w * w);
         }
 
-        vec4 norm() const {
+        inline vec4 norm() const {
             float l = this->len();
             if(l < eps) 
                 return vec4();
@@ -375,24 +375,24 @@ namespace mvmath {
         }
 
         // Slices z and w coord
-        vec2 to_vec2() const {
+        constexpr vec2 to_vec2() const {
             return {x, y};
         }
 
         // Slices z coord
-        vec3 to_vec3() const {
+        constexpr vec3 to_vec3() const {
             return {x, y, z};
         }
 
         // Homogeneous coordinate divide 
         // ! OBS: does not check for zero division
-        vec4 homog_div() const {
+        constexpr vec4 homog_div() const {
             return (*this / w);
         }
 
         // Homogeneous coordinate divide (+ vec3 coord) 
         // ! OBS: does not check for zero division
-        vec3 homog_div3() const {
+        constexpr vec3 homog_div3() const {
             return (*this / w).to_vec3();
         }
 
