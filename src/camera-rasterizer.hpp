@@ -99,7 +99,7 @@ namespace vkr {
         constexpr std::tuple<float, float> nf_planes() const {
             return {near_plane, far_plane};
         }
-        
+
         // Update the matrices before making the mvp/viewport matrix
         void update_mv();
         void update_proj();
@@ -113,6 +113,7 @@ namespace vkr {
 
     protected:
         virtual mvmath::mat4 proj_mat() = 0;
+        virtual bool is_vert_inside(Vertex& v) = 0; // Used by clipper
 
     private:
         mvmath::mat4 view_mat();
@@ -130,6 +131,8 @@ namespace vkr {
         : Camera(pos, sc_width, sc_height, near_plane, far_plane) { }
 
         mvmath::mat4 proj_mat() override;
+        bool is_vert_inside(Vertex& v) override; // Used by clipper
+
     };
 
     struct PerspCamera : Camera {
@@ -157,6 +160,8 @@ namespace vkr {
         void set_fov(float fov, float ac);
 
         mvmath::mat4 proj_mat() override;
+        bool is_vert_inside(Vertex& v) override; // Used by clipper
+
     };
 
     struct CameraRasterizer : public IRenderer {
