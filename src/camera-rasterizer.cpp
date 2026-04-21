@@ -72,19 +72,22 @@ namespace vkr {
         mvmath::mat4 vp = cam.viewport();
 
         for(int i = 0; i < model.faces_len(); i++) {
-            mvmath::vec4 va = mvmath::vec4(model.vert(i, 0), 1);
-            mvmath::vec4 vb = mvmath::vec4(model.vert(i, 1), 1);
-            mvmath::vec4 vc = mvmath::vec4(model.vert(i, 2), 1);
+            Vertex va(mvmath::vec4(model.vert(i, 0), 1));
+            Vertex vb(mvmath::vec4(model.vert(i, 1), 1));
+            Vertex vc(mvmath::vec4(model.vert(i, 2), 1));
 
-            mvmath::vec4 pa = proj * va;
-            mvmath::vec4 pb = proj * vb;
-            mvmath::vec4 pc = proj * vc;
+            Triangle t(va, vb, vc);
+
+            t.apply_mat_clip(proj);
 
             // TODO: Clipping next
 
-            mvmath::vec3 a = (vp * pa.homog_div()).to_vec3();
-            mvmath::vec3 b = (vp * pb.homog_div()).to_vec3();
-            mvmath::vec3 c = (vp * pc.homog_div()).to_vec3();
+            t.homog_div_clip();
+            t.apply_mat_clip(vp);
+
+            mvmath::vec3 a = t.a.clip.to_vec3();
+            mvmath::vec3 b = t.b.clip.to_vec3();
+            mvmath::vec3 c = t.c.clip.to_vec3();
 
             draw_triangle(
                 a, b, c,

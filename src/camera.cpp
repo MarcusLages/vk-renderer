@@ -30,6 +30,7 @@ namespace vkr {
         has_changed_vp = false;
     }
 
+    // ! Includes Model, View (Camera) and Proj matrix
     mvmath::mat4 Camera::project() {
         if(transform.changed() || has_changed_m) update_mv();
         if(has_changed_proj) update_proj();

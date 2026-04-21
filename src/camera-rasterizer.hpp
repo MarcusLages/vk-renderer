@@ -1,5 +1,6 @@
 #pragma once
 #include "transform.hpp"
+#include "primitives.hpp"
 #include "render.hpp"
 #include "mvmath.hpp"
 
