@@ -945,13 +945,13 @@ namespace mvmath {
             float b, float t
         ) {
             float ax = 2 / (r - l);
-            float bx = -(r + l) / (r - l); // Not actually b as in ax + b, but as in ax + bz
+            float bx = (r + l) / (r - l); // Not actually b as in ax + b, but as in ax + bz
 
             float ay = 2 / (t - b);
-            float by = -(t + b) / (t - b); // Not actually b as in ax + b, but as in ax + bz
+            float by = (t + b) / (t - b); // Not actually b as in ax + b, but as in ax + bz
 
-            float az = -f / (f - n);
-            float bz = (-f * n) / (f - n);
+            float az = f / (f - n);
+            float bz = -(f + n) / (f - n);
 
             return {
                 ax, 0, bx, 0,
