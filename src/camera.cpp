@@ -48,21 +48,6 @@ namespace vkr {
         return mvmath::mat4::ortho_project(n, f, bl.x, tr.x, bl.y, tr.y);
     }
 
-    // TODO: later change to the cohen-sutherland number algorithm
-    bool is_vert_inside(Vertex& v) {
-        for(int i = Triangle::Idx::A; i < Triangle::Idx::C; i++) {
-            if(v.clip.w <= 0 ||
-               v.clip.x > v.clip.w || v.clip.x < -v.clip.w ||
-               v.clip.y > v.clip.w || v.clip.y < -v.clip.w ||
-               v.clip.z > v.clip.w || v.clip.z < 0
-            ) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-
     float PerspCamera::fov() const {
         auto [_, tr] = proj_frame();
         auto [n, _f] = nf_planes();
@@ -79,22 +64,6 @@ namespace vkr {
         auto [n, f] = nf_planes();
         auto [bl, tr] = proj_frame();
         return mvmath::mat4::persp_project(n, f, bl.x, tr.x, bl.y, tr.y);
-    }
-
-    // TODO: later change to the cohen-sutherland number algorithm
-    bool is_vert_inside(Vertex& v) {
-        for(int i = Triangle::Idx::A; i < Triangle::Idx::C; i++) {
-            // Inverted because of the -z divide
-            if(v.clip.w >= 0 ||
-               v.clip.x < v.clip.w || v.clip.x > -v.clip.w ||
-               v.clip.y < v.clip.w || v.clip.y > -v.clip.w ||
-               v.clip.z < v.clip.w || v.clip.z > 0
-            ) {
-                return false;
-            }
-        }
-        
-        return true;
     }
 
 }
