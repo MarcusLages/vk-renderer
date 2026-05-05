@@ -7,6 +7,7 @@ namespace mvmath {
     inline constexpr float eps = 1e-5f;
     inline constexpr int HALF_ROT_DEG = 180;
 
+    inline bool is_equalf(float x, float y);
     constexpr float deg_to_rad(float deg);
     constexpr float rad_to_deg(float rad);
     
@@ -72,8 +73,8 @@ namespace mvmath {
         }
         
         inline bool operator==(vec2 v) const {
-            return std::fabs(x - v.x) < eps &&
-                   std::fabs(y - v.y) < eps;
+            return is_equalf(x, v.x) &&
+                   is_equalf(y, v.y);
         }
 
         inline bool operator!=(vec2 v) const {
@@ -198,9 +199,9 @@ namespace mvmath {
         }
         
         inline bool operator==(vec3 v) const {
-            return std::fabs(x - v.x) < eps &&
-                   std::fabs(y - v.y) < eps &&
-                   std::fabs(z - v.z) < eps;
+            return is_equalf(x, v.x) &&
+                   is_equalf(y, v.y) &&
+                   is_equalf(z, v.z);
         }
 
         inline bool operator!=(vec3 v) const {
@@ -330,10 +331,10 @@ namespace mvmath {
         }
         
         inline bool operator==(vec4 v) const {
-            return std::fabs(x - v.x) < eps &&
-                   std::fabs(y - v.y) < eps &&
-                   std::fabs(z - v.z) < eps &&
-                   std::fabs(w - v.w) < eps;
+            return is_equalf(x, v.x) &&
+                   is_equalf(y, v.y) &&
+                   is_equalf(z, v.z) &&
+                   is_equalf(w, v.w);
         }
 
         inline bool operator!=(vec4 v) const {
@@ -1031,6 +1032,9 @@ namespace mvmath {
     inline constexpr mat4 mat4_ID   = mat4::id();
 
     // * Utils Functions
+    inline bool is_equalf(float x, float y) {
+        return std::fabs(x - y) < eps;
+    }
 
     constexpr float deg_to_rad(float deg) {
         return (deg * M_PI) / HALF_ROT_DEG;
