@@ -22,38 +22,46 @@ namespace vkr {
     }
     
     // Used by clipper
-    // Returns the Cohen-Sutherland number
-    // Bits 0-5: a
-    // Bits 6-11: b
-    // Bits 12-17: c
-    int is_inside_cs(Vertex& v) {
-        int res = 0;
-        int bitshift = 0;
+    // Returns the Cohen-Sutherland number as CSConst
+    std::vector<int> get_cs_consts(Triangle& t) {
+        std::vector<int> res = {0, 0, 0};
 
         for(int i = Triangle::Idx::A; i <= Triangle::Idx::C; i++) {
-            if(v.clip.y > v.clip.w)
-                res |= (CSConst::ABOVE << bitshift);
-            if(v.clip.y < -v.clip.w)
-                res |= (CSConst::BELOW << bitshift);
-            if(v.clip.x > v.clip.w)
-                res |= (CSConst::RIGHT << bitshift);
-            if(v.clip.x < -v.clip.w)
-                res |= (CSConst::LEFT << bitshift);
-            if(v.clip.z < v.clip.w)
-                res |= (CSConst::FAR << bitshift);
-            if(v.clip.z > 0)
-                res |= (CSConst::NEAR << bitshift);
+            int& cur = res[i];
 
-            bitshift += CSConst::BITS;
+            if(t[i].clip.y > t[i].clip.w)
+                cur |= (CSConst::ABOVE);
+            if(t[i].clip.y < -t[i].clip.w)
+                cur |= (CSConst::BELOW);
+            if(t[i].clip.x > t[i].clip.w)
+                cur |= (CSConst::RIGHT);
+            if(t[i].clip.x < -t[i].clip.w)
+                cur |= (CSConst::LEFT);
+            if(t[i].clip.z < t[i].clip.w)     // Looks backwards, but don't forget z is negative here
+                cur |= (CSConst::FAR);
+            if(t[i].clip.z > 0)
+                cur |= (CSConst::NEAR);
         }
-        
+
         return res;
     }
     
     ClipReturn clip(Triangle& t) {
+        std::vector<Triangle> res;
+        
         // Degenerate division by 0 on z-division
         if(!is_valid_clip_triangle(t)) {
-            return ClipReturn(false, std::vector<Triangle>());
+            return ClipReturn(false, res);
+        }
+
+        std::vector<int> cs_consts = get_cs_consts(t);
+
+        // Case 1: all vertices inside; accept triangle; no clipping
+        if(cs_consts[0] == 0 &&
+           cs_consts[1] == 0 &&
+           cs_consts[2] == 0) {
+            res.push_back(t);
+            return ClipReturn(true, res);
         }
 
         // TODO
