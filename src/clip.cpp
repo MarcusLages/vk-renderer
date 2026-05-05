@@ -45,14 +45,28 @@ namespace vkr {
 
         return res;
     }
+
+    // If, throughout all the vertices, the same n bit is 1, then the whole 
+    // triangle is outside
+    //      E.g.: [0b001011, 0b101000, 0b001000]
+    //            The fourth digit is 1 in every single one of the vertices, 
+    //            which means that the whole triangle is out
+    // Must: cs_consts.size() == 3
+    bool is_triangle_outside(std::vector<int>& cs_consts) {
+        for(int i = 0; i < CSConst::BITS; i++) {
+            int mask = 1 << i;
+            if(mask & cs_consts[0] & cs_consts[1] & cs_consts[2])
+                return true;
+        }
+        return false;
+    }
     
     ClipReturn clip(Triangle& t) {
         std::vector<Triangle> res;
         
         // Degenerate division by 0 on z-division
-        if(!is_valid_clip_triangle(t)) {
+        if(!is_valid_clip_triangle(t))
             return ClipReturn(false, res);
-        }
 
         std::vector<int> cs_consts = get_cs_consts(t);
 
@@ -63,6 +77,10 @@ namespace vkr {
             res.push_back(t);
             return ClipReturn(true, res);
         }
+
+        // Case 2: all vertices outside; reject triangle; no clipping
+        if(is_triangle_outside(cs_consts))
+            return ClipReturn(false, res);
 
         // TODO
     }
