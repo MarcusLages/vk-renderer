@@ -16,9 +16,9 @@ namespace vkr {
 
     // Used to check if all w != 0 to not cause 0 division
     bool is_valid_clip_triangle(Triangle& t) {
-        return mvmath::is_equalf(t.a.clip.w, 0) &&
-               mvmath::is_equalf(t.b.clip.w, 0) &&
-               mvmath::is_equalf(t.c.clip.w, 0);
+        return !(mvmath::is_equalf(t.a.clip.w, 0) ||
+                 mvmath::is_equalf(t.b.clip.w, 0) ||
+                 mvmath::is_equalf(t.c.clip.w, 0));
     }
     
     // Used by clipper
@@ -37,7 +37,7 @@ namespace vkr {
                 cur |= (CSConst::RIGHT);
             if(t[i].clip.x < -t[i].clip.w)
                 cur |= (CSConst::LEFT);
-            if(t[i].clip.z < t[i].clip.w)     // Looks backwards, but don't forget z is negative here
+            if(t[i].clip.z < -t[i].clip.w)     // Looks backwards, but don't forget z is negative here
                 cur |= (CSConst::FAR);
             if(t[i].clip.z > 0)
                 cur |= (CSConst::NEAR);
