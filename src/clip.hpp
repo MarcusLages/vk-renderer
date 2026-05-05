@@ -1,4 +1,5 @@
 #pragma once
+#include <tuple>
 #include <vector>
 #include "primitives.hpp"
 
@@ -15,6 +16,7 @@ namespace vkr {
     //     constexpr ClipResult() = default;
     // };
     
-    std::vector<Triangle> clip(Triangle& t);
+    using ClipReturn = std::tuple<bool, std::vector<Triangle>>;
+    ClipReturn clip(Triangle& t);
     
 } // namespace vkr

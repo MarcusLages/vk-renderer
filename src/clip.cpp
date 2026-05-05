@@ -43,7 +43,12 @@ namespace vkr {
         return res;
     }
     
-    std::vector<Triangle> clip(Triangle& t) {
+    ClipReturn clip(Triangle& t) {
+        // Degenerate division by 0 on z-division
+        if(!t.is_valid()) {
+            return ClipReturn(false, std::vector<Triangle>());
+        }
+
         // TODO
     }
 
