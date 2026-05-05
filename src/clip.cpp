@@ -13,6 +13,13 @@ namespace vkr {
         NEAR    = 0b0100000,
         BITS = 6
     };
+
+    // Used to check if all w != 0 to not cause 0 division
+    bool is_valid_clip_triangle(Triangle& t) {
+        return mvmath::is_equalf(t.a.clip.w, 0) &&
+               mvmath::is_equalf(t.b.clip.w, 0) &&
+               mvmath::is_equalf(t.c.clip.w, 0);
+    }
     
     // Used by clipper
     // Returns the Cohen-Sutherland number
@@ -45,7 +52,7 @@ namespace vkr {
     
     ClipReturn clip(Triangle& t) {
         // Degenerate division by 0 on z-division
-        if(!t.is_valid()) {
+        if(!is_valid_clip_triangle(t)) {
             return ClipReturn(false, std::vector<Triangle>());
         }
 

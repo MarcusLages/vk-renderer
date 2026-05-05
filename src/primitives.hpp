@@ -21,11 +21,7 @@ namespace vkr {
 
         constexpr Vertex() = default;
         constexpr Vertex(mvmath::vec4 v) : clip(v) {}
-
-        // Degenerate division by 0 on z-division
-        inline const bool is_valid() const {
-            return !mvmath::is_equalf(clip.w, 0);
-        }
+        
     };
 
     struct Triangle {
@@ -65,11 +61,6 @@ namespace vkr {
                 case Idx::C: return c;
                 default: _UNREACHABLE();
             }
-        }
-
-        // Used to check if all w != 0 to not cause 0 division
-        inline const bool is_valid() const {
-            return a.is_valid() && b.is_valid() && c.is_valid();
         }
 
         constexpr void apply_mat_clip(mvmath::mat4 transf) {
