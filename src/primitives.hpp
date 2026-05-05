@@ -1,7 +1,7 @@
 #pragma once
 #include "mvmath.hpp"
 
-// Just used for a
+// Just used for a safer compilation
 #if defined(__cpp_lib_unreachable) && (__cpp_lib_unreachable >= 202202L)
     #define _UNREACHABLE() std::unreachable()
 #elif defined(_MSC_VER)
@@ -19,6 +19,7 @@ namespace vkr {
         // TODO: it will have more stuff in it
         mvmath::vec4 clip;
 
+        constexpr Vertex() = default;
         constexpr Vertex(mvmath::vec4 v) : clip(v) {}
     };
 
@@ -32,6 +33,9 @@ namespace vkr {
         };
 
         Vertex a, b, c;
+
+        // ! Degenerate triangle
+        constexpr Triangle() = default;
 
         // ! Counter-clockwise order
         constexpr Triangle(Vertex a, Vertex b, Vertex c) : a(a), b(b), c(c) {}
