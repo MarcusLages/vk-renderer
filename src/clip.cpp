@@ -120,14 +120,14 @@ namespace vkr {
         // Case 3: clip triangle on the 6 planes of the frustrum of:
         //         <[left, right], [down, up], [near, far]>
         //         <[-w, +w], [-w, +w], [0, +w]>
-        std::vector<Vertex> in_polygon(3);
+        std::vector<Vertex> in_polygon(3), out_polygon;
         in_polygon[0] = t.a;
         in_polygon[1] = t.b;
         in_polygon[2] = t.c;
 
         CSConst cs_plane = CSConst::FIRST;
         for(int i = 0; i < CSConst::TOTAL; i++) {
-            std::vector<Vertex> out_polygon;
+            out_polygon = std::vector<Vertex>();
             Vertex cur, prev;
 
             for(int j = 0; j < in_polygon.size(); j++) {
@@ -163,7 +163,12 @@ namespace vkr {
             cs_plane = next_plane_const(cs_plane);
         }
 
-        // TODO: Create the output triangle list from the out_polygon
+        // Create the output triangle list from the out_polygon
+        for(int i = 1; i < out_polygon.size() - 1; i++) {
+            Triangle t(out_polygon[0], out_polygon[i], out_polygon[i + 1]);
+            res.push_back(t);
+        }
+        return ClipReturn(true, res);
     }
 
 } // namespace vkr
