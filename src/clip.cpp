@@ -47,6 +47,18 @@ namespace vkr {
     // Point on the line from prev to cur which intersects the limiting plane
     Vertex plane_intersect(CSConst cs, Vertex prev, Vertex cur) {
         // TODO: lerp logic
+        // TODO: only using a simple logic for doing it on ABOVE
+        mvmath::vec4 a = prev.clip;
+        mvmath::vec4 b = cur.clip;
+        float t = (a.w - a.y) / ((b.y - a.y) - (b.w - a.w));
+        
+        float t_rem = 1 - t;
+        mvmath::vec4 inter = {
+            t_rem * prev.clip.x + t * cur.clip.x,
+            t_rem * prev.clip.y + t * cur.clip.y,
+            t_rem * prev.clip.z + t * cur.clip.z,
+            t_rem * prev.clip.w + t * cur.clip.w
+        };
         return Vertex();
     }
 
