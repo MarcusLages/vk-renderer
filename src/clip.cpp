@@ -44,6 +44,12 @@ namespace vkr {
         }
     }
 
+    // Point on the line from prev to cur which intersects the limiting plane
+    Vertex plane_intersect(CSConst cs, Vertex prev, Vertex cur) {
+        // TODO: lerp logic
+        return Vertex();
+    }
+
     // Used to check if all w != 0 to not cause 0 division
     bool is_valid_clip_triangle(Triangle& t) {
         return !(mvmath::is_equalf(t.a.clip.w, 0) ||
@@ -133,7 +139,24 @@ namespace vkr {
                 bool cur_inside = compare_plane(cs_plane, cur);
                 bool prev_inside = compare_plane(cs_plane, prev);
 
-                // TODO: different cases for cur and prev in/out
+                if(cur_inside) {
+                    if(prev_inside) {
+                        // Case 1: both inside
+                        out_polygon.push_back(cur);
+                    } else {
+                        // Case 2: cur inside, prev outside (entering visible space)
+                        Vertex intersect = plane_intersect(cs_plane, prev, cur);
+                        out_polygon.push_back(intersect);
+                        out_polygon.push_back(cur);
+                    }
+                } else {
+                    if(prev_inside) {
+                        // Case 2: cur outside, prev inside (exiting visible space)
+                        Vertex intersect = plane_intersect(cs_plane, prev, cur);
+                        out_polygon.push_back(intersect);
+                    }
+                    // Case 4: both outside (ignores vertex)
+                }
             }
 
             in_polygon = out_polygon;
