@@ -1,18 +1,46 @@
 #include <cmath>
+#include "unreachable.hpp"
 #include "clip.hpp"
 
 namespace vkr {
 
     // Cohen-Sutherland number constants
     enum CSConst {
-        ABOVE   = 0b0000001,
-        BELOW   = 0b0000010,
-        RIGHT   = 0b0000100,
-        LEFT    = 0b0001000,
-        FAR     = 0b0010000,
-        NEAR    = 0b0100000,
+        ABOVE   = 0b000001,
+        BELOW   = 0b000010,
+        RIGHT   = 0b000100,
+        LEFT    = 0b001000,
+        FAR     = 0b010000,
+        NEAR    = 0b100000,
+        FIRST   = ABOVE,
+        LAST    = NEAR,
         BITS = 6
     };
+
+    CSConst next_plane_const(CSConst cs) {
+        if(cs >= CSConst::LAST)
+            return CSConst::FIRST;
+        else
+            return CSConst(static_cast<int>(cs) << 1);
+    }
+
+    bool compare_plane(CSConst cs, Vertex v) {
+        switch(cs) {
+            case CSConst::ABOVE:
+                return v.clip.y > v.clip.w;
+            case CSConst::BELOW:
+                return v.clip.y < -v.clip.w;
+            case CSConst::RIGHT:
+                return v.clip.x > v.clip.w;
+            case CSConst::LEFT:
+                return v.clip.x < -v.clip.w;
+            case CSConst::FAR:
+                return v.clip.z < -v.clip.w; // Perspective does looks backwards, but don't forget z is negative here
+            case CSConst::NEAR:
+                return v.clip.z > 0;
+            default: _UNREACHABLE();
+        }
+    }
 
     // Used to check if all w != 0 to not cause 0 division
     bool is_valid_clip_triangle(Triangle& t) {
@@ -29,18 +57,13 @@ namespace vkr {
         for(int i = Triangle::Idx::A; i <= Triangle::Idx::C; i++) {
             int& cur = res[i];
 
-            if(t[i].clip.y > t[i].clip.w)
-                cur |= (CSConst::ABOVE);
-            if(t[i].clip.y < -t[i].clip.w)
-                cur |= (CSConst::BELOW);
-            if(t[i].clip.x > t[i].clip.w)
-                cur |= (CSConst::RIGHT);
-            if(t[i].clip.x < -t[i].clip.w)
-                cur |= (CSConst::LEFT);
-            if(t[i].clip.z < -t[i].clip.w)     // Looks backwards, but don't forget z is negative here
-                cur |= (CSConst::FAR);
-            if(t[i].clip.z > 0)
-                cur |= (CSConst::NEAR);
+            CSConst cs_plane = CSConst::FIRST;
+            for(int j = 0; j < CSConst::BITS; j++) {
+                if(compare_plane(cs_plane, t[i]))
+                    cur |= cs_plane;
+                    
+                cs_plane = next_plane_const(cs_plane);
+            }
         }
 
         return res;
@@ -61,9 +84,12 @@ namespace vkr {
         return false;
     }
     
+    // Uses a modified Sutherland-Hodgman polygon clipping algorithm
     ClipReturn clip(Triangle& t) {
         std::vector<Triangle> res;
         
+        // TODO: only here for now
+        //       will take care of that on a later step, only here to avoid crashes
         // Degenerate division by 0 on z-division
         if(!is_valid_clip_triangle(t))
             return ClipReturn(false, res);
