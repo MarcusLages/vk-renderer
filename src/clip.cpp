@@ -14,9 +14,11 @@ namespace vkr {
         NEAR    = 0b100000,
         FIRST   = ABOVE,
         LAST    = NEAR,
-        BITS = 6
+        BITS    = 6,
+        TOTAL   = BITS
     };
 
+    // ? Wraps around
     CSConst next_plane_const(CSConst cs) {
         if(cs >= CSConst::LAST)
             return CSConst::FIRST;
@@ -58,7 +60,7 @@ namespace vkr {
             int& cur = res[i];
 
             CSConst cs_plane = CSConst::FIRST;
-            for(int j = 0; j < CSConst::BITS; j++) {
+            for(int j = 0; j < CSConst::TOTAL; j++) {
                 if(compare_plane(cs_plane, t[i]))
                     cur |= cs_plane;
                     
@@ -108,7 +110,37 @@ namespace vkr {
         if(is_triangle_outside(cs_consts))
             return ClipReturn(false, res);
 
-        // TODO
+
+        // Case 3: clip triangle on the 6 planes of the frustrum of:
+        //         <[left, right], [down, up], [near, far]>
+        //         <[-w, +w], [-w, +w], [0, +w]>
+        std::vector<Vertex> in_polygon(3);
+        in_polygon[0] = t.a;
+        in_polygon[1] = t.b;
+        in_polygon[2] = t.c;
+
+        CSConst cs_plane = CSConst::FIRST;
+        for(int i = 0; i < CSConst::TOTAL; i++) {
+            std::vector<Vertex> out_polygon;
+            Vertex cur, prev;
+
+            for(int j = 0; j < in_polygon.size(); j++) {
+                // ? Have to add the size so there's no negative modulo causing wrong indexes
+                int prev_idx = (in_polygon.size() + j - 1) % in_polygon.size();
+                cur = in_polygon[j];
+                prev = in_polygon[prev_idx];
+
+                bool cur_inside = compare_plane(cs_plane, cur);
+                bool prev_inside = compare_plane(cs_plane, prev);
+
+                // TODO: different cases for cur and prev in/out
+            }
+
+            in_polygon = out_polygon;
+            cs_plane = next_plane_const(cs_plane);
+        }
+
+        // TODO: Create the output triangle list from the out_polygon
     }
 
 } // namespace vkr
