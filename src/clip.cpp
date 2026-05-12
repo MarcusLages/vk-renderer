@@ -43,6 +43,26 @@ namespace vkr {
             default: _UNREACHABLE();
         }
     }
+    
+    float plane_lerp_get_t(CSConst cs, Vertex prev, Vertex cur) {
+        const mvmath::vec4 a = prev.clip;
+        const mvmath::vec4 b = cur.clip;
+        switch(cs) {
+            case CSConst::ABOVE:
+                return (a.w - a.y) / ((b.y - a.y) - (b.w - a.w));
+            case CSConst::BELOW:
+                return (a.w + a.y) / ((a.w + a.y) - (b.w + b.y));
+            case CSConst::RIGHT:
+                return (a.w - a.x) / ((b.x - a.x) - (b.w - a.w));
+            case CSConst::LEFT:
+                return (a.w + a.x) / ((a.w + a.x) - (b.w + b.x));
+            case CSConst::FAR:
+                return (a.w - a.z) / ((b.z - a.z) - (b.w - a.w));
+            case CSConst::NEAR:
+                return - a.z / (b.z - a.z);
+            default: _UNREACHABLE();
+        }
+    }
 
     // Point on the line from prev to cur which intersects the limiting plane
     Vertex plane_intersect(CSConst cs, Vertex prev, Vertex cur) {
@@ -50,7 +70,7 @@ namespace vkr {
         // TODO: only using a simple logic for doing it on ABOVE
         mvmath::vec4 a = prev.clip;
         mvmath::vec4 b = cur.clip;
-        float t = (a.w - a.y) / ((b.y - a.y) - (b.w - a.w));
+        float t = plane_lerp_get_t(cs, prev, cur);
         
         float t_rem = 1 - t;
         mvmath::vec4 inter = {
