@@ -26,7 +26,7 @@ namespace vkr {
             return CSConst(static_cast<int>(cs) << 1);
     }
 
-    bool compare_plane(CSConst cs, Vertex v) {
+    bool is_outside_plane(CSConst cs, Vertex v) {
         switch(cs) {
             case CSConst::ABOVE:
                 return v.clip.y > v.clip.w;
@@ -37,9 +37,9 @@ namespace vkr {
             case CSConst::LEFT:
                 return v.clip.x < -v.clip.w;
             case CSConst::FAR:
-                return v.clip.z < -v.clip.w; // Perspective does looks backwards, but don't forget z is negative here
+                return v.clip.z > v.clip.w;
             case CSConst::NEAR:
-                return v.clip.z > 0;
+                return v.clip.z < 0;
             default: _UNREACHABLE();
         }
     }
@@ -79,7 +79,7 @@ namespace vkr {
 
             CSConst cs_plane = CSConst::FIRST;
             for(int j = 0; j < CSConst::TOTAL; j++) {
-                if(compare_plane(cs_plane, t[i]))
+                if(is_outside_plane(cs_plane, t[i]))
                     cur |= cs_plane;
                     
                 cs_plane = next_plane_const(cs_plane);
@@ -148,8 +148,8 @@ namespace vkr {
                 cur = in_polygon[j];
                 prev = in_polygon[prev_idx];
 
-                bool cur_inside = compare_plane(cs_plane, cur);
-                bool prev_inside = compare_plane(cs_plane, prev);
+                bool cur_inside = is_outside_plane(cs_plane, cur);
+                bool prev_inside = is_outside_plane(cs_plane, prev);
 
                 if(cur_inside) {
                     if(prev_inside) {
