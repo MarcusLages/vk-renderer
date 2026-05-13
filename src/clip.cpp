@@ -59,17 +59,14 @@ namespace vkr {
             case CSConst::FAR:
                 return (a.w - a.z) / ((b.z - a.z) - (b.w - a.w));
             case CSConst::NEAR:
-                return - a.z / (b.z - a.z);
+                if(mvmath::is_equalf(a.z, b.z)) return 0;
+                return - a.z / (b.z - a.z); // Different because z is in [0, +1]
             default: _UNREACHABLE();
         }
     }
 
     // Point on the line from prev to cur which intersects the limiting plane
     Vertex plane_intersect(CSConst cs, Vertex prev, Vertex cur) {
-        // TODO: lerp logic
-        // TODO: only using a simple logic for doing it on ABOVE
-        mvmath::vec4 a = prev.clip;
-        mvmath::vec4 b = cur.clip;
         float t = plane_lerp_get_t(cs, prev, cur);
         
         float t_rem = 1 - t;
@@ -79,14 +76,7 @@ namespace vkr {
             t_rem * prev.clip.z + t * cur.clip.z,
             t_rem * prev.clip.w + t * cur.clip.w
         };
-        return Vertex();
-    }
-
-    // Used to check if all w != 0 to not cause 0 division
-    bool is_valid_clip_triangle(Triangle& t) {
-        return !(mvmath::is_equalf(t.a.clip.w, 0) ||
-                 mvmath::is_equalf(t.b.clip.w, 0) ||
-                 mvmath::is_equalf(t.c.clip.w, 0));
+        return Vertex(inter);
     }
     
     // Used by clipper
@@ -127,13 +117,6 @@ namespace vkr {
     // Uses a modified Sutherland-Hodgman polygon clipping algorithm
     ClipReturn clip(Triangle& t) {
         std::vector<Triangle> res;
-        
-        // TODO: only here for now
-        //       will take care of that on a later step, only here to avoid crashes
-        // Degenerate division by 0 on z-division
-        if(!is_valid_clip_triangle(t))
-            return ClipReturn(false, res);
-
         std::vector<int> cs_consts = get_cs_consts(t);
 
         // Case 1: all vertices inside; accept triangle; no clipping
@@ -168,8 +151,8 @@ namespace vkr {
                 cur = in_polygon[j];
                 prev = in_polygon[prev_idx];
 
-                bool cur_inside = is_outside_plane(cs_plane, cur);
-                bool prev_inside = is_outside_plane(cs_plane, prev);
+                bool cur_inside = !is_outside_plane(cs_plane, cur);
+                bool prev_inside = !is_outside_plane(cs_plane, prev);
 
                 if(cur_inside) {
                     if(prev_inside) {
