@@ -11,6 +11,7 @@ set(SOURCES
     src/model.cpp
     src/line-renderer.cpp
     src/flat-rasterizer.cpp
+    src/clip.cpp
     src/camera.cpp
     src/camera-rasterizer.cpp
     src/main.cpp

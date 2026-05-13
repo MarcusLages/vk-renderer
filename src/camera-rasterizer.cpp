@@ -1,4 +1,5 @@
 #include <algorithm>
+#include "clip.hpp"
 #include "camera-rasterizer.hpp"
 #include "render-utils.hpp"
 
@@ -80,20 +81,25 @@ namespace vkr {
 
             t.apply_mat_clip(proj);
 
-            // TODO: Clipping next
+            auto [visible, out_tri_list] = clip(t);
 
-            t.homog_div_clip();
-            t.apply_mat_clip(vp);
-
-            mvmath::vec3 a = t.a.clip.to_vec3();
-            mvmath::vec3 b = t.b.clip.to_vec3();
-            mvmath::vec3 c = t.c.clip.to_vec3();
-
-            draw_triangle(
-                a, b, c,
-                (is_color_rand) ? get_rand_col() : tri_col
-            );
+            if(visible) {
+                for(Triangle out_t: out_tri_list) {
+                    out_t.homog_div_clip();
+                    out_t.apply_mat_clip(vp);
+        
+                    mvmath::vec3 a = out_t.a.clip.to_vec3();
+                    mvmath::vec3 b = out_t.b.clip.to_vec3();
+                    mvmath::vec3 c = out_t.c.clip.to_vec3();
+        
+                    draw_triangle(
+                        a, b, c,
+                        (is_color_rand) ? get_rand_col() : tri_col
+                    );
+                }
+            }
         }
     }
+
 
 }
