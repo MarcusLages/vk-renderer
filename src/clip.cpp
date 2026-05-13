@@ -59,7 +59,6 @@ namespace vkr {
             case CSConst::FAR:
                 return (a.w - a.z) / ((b.z - a.z) - (b.w - a.w));
             case CSConst::NEAR:
-                if(mvmath::is_equalf(a.z, b.z)) return 0;
                 return - a.z / (b.z - a.z); // Different because z is in [0, +1]
             default: _UNREACHABLE();
         }
