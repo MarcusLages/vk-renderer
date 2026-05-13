@@ -105,6 +105,7 @@ namespace vkr {
     //            The fourth digit is 1 in every single one of the vertices, 
     //            which means that the whole triangle is out
     // Must: cs_consts.size() == 3
+    // ! IMPORTANT: only detects if a triangle is outside on the sides, not the diagonals
     bool is_triangle_outside(std::vector<int>& cs_consts) {
         for(int i = 0; i < CSConst::BITS; i++) {
             int mask = 1 << i;
@@ -128,6 +129,7 @@ namespace vkr {
         }
 
         // Case 2: all vertices outside; reject triangle; no clipping
+        // ! IMPORTANT: only detects if a triangle is outside on the sides, not the diagonals
         if(is_triangle_outside(cs_consts))
             return ClipReturn(false, res);
 
@@ -174,6 +176,11 @@ namespace vkr {
                 }
             }
 
+            // ! Important guard since a triangle can be completely outside in 
+            // the diagonal, and that is detected better only during clipping
+            if(out_polygon.empty())
+                return ClipReturn(false, res);
+                
             in_polygon = out_polygon;
             cs_plane = next_plane_const(cs_plane);
         }
