@@ -22,6 +22,8 @@ cmake --build build -j
 build\vkr.exe obj\diablo3_pose\diablo3_pose.obj obj\floor.obj
 ```
 
-# References
+# Biggest References
 - [tinyrenderer](https://haqr.eu/tinyrenderer/) by [Dmitry V. Sokolov](https://github.com/ssloy)
 - [3D Math Primer for Graphics and Game Development](https://gamemath.com/book/) by [Fletcher Dunn](https://github.com/zpostfacto) and [Ian Parberry](https://ianparberry.com/)
+- [Scratchapixel](https://www.scratchapixel.com/index.html)
+- For more, check the [REFERENCES.md](https://github.com/MarcusLages/vk-renderer/blob/main/REFERENCES.md)
